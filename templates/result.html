@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Results - {{ video_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    /* Center and style the video */
+    .video-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .video-rectangle {
+      width: 80%;
+      max-width: 700px;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Larger and centered audio bar */
+    .audio-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    audio {
+      width: 80%;
+      max-width: 500px;
+      height: 50px; /* makes the bar taller */
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .video-rectangle {
+        width: 95%;
+      }
+
+      audio {
+        width: 95%;
+        height: 45px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient text-light">
+
+<div class="container py-5">
+  <h1 class="text-center mb-4" style="color: black;">📄 Results for: {{ video_name }}</h1>
+
+  <!-- Video (rectangular and centered) -->
+  <div class="video-wrapper">
+    <video controls class="video-rectangle">
+      <source src="{{ url_for('static', filename=video_file) }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card bg-secondary text-light p-3">
+        <h3>📝 Transcribed Text</h3>
+        <p style="white-space: pre-wrap;">{{ transcript }}</p>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card bg-info text-dark p-3">
+        <h3>✨ Summary</h3>
+        <p style="white-space: pre-wrap;">{{ summary }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Audio (larger) -->
+  <div class="card bg-success text-dark p-3 text-center">
+    <h4>🎧 Summary Audio</h4>
+    <div class="audio-wrapper">
+      <audio controls>
+        <source src="{{ url_for('static', filename=summary_audio) }}" type="audio/mpeg">
+        Your browser does not support the audio tag.
+      </audio>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="/" class="btn btn-light">⬅️ Upload Another Video</a>
+  </div>
+</div>
+
+</body>
+</html>

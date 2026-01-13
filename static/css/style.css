@@ -1,0 +1,19 @@
+body.bg-gradient {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.card {
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}

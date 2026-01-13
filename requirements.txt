@@ -1,0 +1,17 @@
+flask
+opencv-python
+moviepy==1.0.3
+pillow
+pytesseract
+speechrecognition
+torch
+transformers
+sentencepiece
+pydub
+pyttsx3
+ffmpeg-python
+scenedetect
+gTTS
+nltk
+faster-whisper
+
