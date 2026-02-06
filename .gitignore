@@ -1,9 +1,14 @@
 # Virtual environment
 venv/
+env/
+ENV/
 
 # Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 
 # Generated results
 static/results/
@@ -11,10 +16,32 @@ static/results/
 # Uploaded videos
 static/videos/
 
+# Temporary files
+temp_chunk_*.wav
+*.tmp
+*.temp
+
 # IDE files
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Environment variables
+.env
+.env.local
+
+# Model cache (if downloaded)
+models/
+*.pt
+*.pth
+
+# Logs
+*.log
+logs/
