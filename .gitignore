@@ -31,17 +31,11 @@ temp_chunk_*.wav
 # OS files
 .DS_Store
 Thumbs.db
-desktop.ini
-
-# Environment variables
+desktop.ini# Environment variables
 .env
-.env.local
-
-# Model cache (if downloaded)
+.env.local# Model cache (if downloaded)
 models/
 *.pt
-*.pth
-
-# Logs
+*.pth# Logs
 *.log
 logs/
