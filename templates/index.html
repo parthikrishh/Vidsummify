@@ -2,225 +2,772 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VidSummify - Video Summarizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>VidSummify - AI Video Summarizer</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    #loading {
-      display: none;
-      color: #2d3748;
-      font-weight: bold;
-      font-size: 1.3em;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    #cancel-alert {
-      display: none;
-      width: 50%;
-      margin: 20px auto;
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
     }
-    .logo-container {
-      margin-bottom: 2rem;
-    }
-    .logo-icon {
-      font-size: 4rem;
-      color: #667eea;
-      margin-bottom: 1rem;
-      display: inline-block;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .main-title {
-      color: #1a202c;
-      font-size: 3.5rem;
-      font-weight: 900;
-      font-family: 'Poppins', sans-serif;
-      margin-bottom: 0.5rem;
-      letter-spacing: -1px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .subtitle {
-      color: #4a5568;
-      font-size: 1.2rem;
-      font-weight: 500;
-      font-family: 'Inter', sans-serif;
-      margin-top: 0.5rem;
-      line-height: 1.6;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .upload-form {
-      background: #ffffff;
-      padding: 45px;
-      border-radius: 30px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-      max-width: 650px;
-      margin: 0 auto;
-      border: 1px solid rgba(102, 126, 234, 0.1);
-    }
-    .file-input-wrapper {
-      position: relative;
-      margin-bottom: 30px;
-    }
-    .file-input-label {
-      color: #2d3748;
-      font-weight: 700;
-      font-size: 1.15em;
-      margin-bottom: 15px;
-      display: block;
-      font-family: 'Inter', sans-serif;
-    }
-    .file-input-label i {
-      color: #667eea;
-      margin-right: 8px;
-    }
-    .file-input-wrapper input[type="file"] {
-      padding: 18px;
-      border: 3px dashed #667eea;
-      border-radius: 15px;
-      background: rgba(102, 126, 234, 0.05);
-      transition: all 0.3s ease;
-      color: #2d3748;
-      font-weight: 500;
-    }
-    .file-input-wrapper input[type="file"]:hover {
-      border-color: #764ba2;
-      background: rgba(102, 126, 234, 0.1);
-      transform: translateY(-2px);
-    }
-    .file-input-wrapper input[type="file"]::file-selector-button {
+
+    body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 10px 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER & NAVBAR ===== */
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .navbar-brand {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #667eea !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-brand i {
+      font-size: 1.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-user span {
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       font-weight: 600;
-      margin-right: 15px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .nav-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    .nav-btn-secondary {
+      background: #f0f0f0;
+      color: #2d3748;
+      border: 1px solid #e0e0e0;
+    }
+
+    .nav-btn-secondary:hover {
+      background: #e0e0e0;
+      color: #2d3748;
+    }
+
+    .nav-btn-danger {
+      color: #e74c3c;
+    }
+
+    .nav-btn-danger:hover {
+      color: #c0392b;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .container-form {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .hero-icon {
+      font-size: 4rem;
+      color: white;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.2));
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* ===== FORM ELEMENTS ===== */
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: #2d3748;
+    }
+
+    .form-label i {
+      color: #667eea;
+      margin-right: 0.5rem;
+    }
+
+    .form-control, .form-select {
+      background: #f9f9f9;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+      color: #2d3748;
+      transition: all 0.3s ease;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .form-control::placeholder, .form-select option {
+      color: #999;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: white;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      outline: none;
+    }
+
+    .help-text {
+      display: block;
+      font-size: 0.85rem;
+      color: #718096;
+      margin-top: 0.5rem;
+    }
+
+    /* ===== FILE INPUT ===== */
+    .file-input-zone {
+      position: relative;
+      border: 2px dashed #667eea;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      padding: 2rem 1.5rem;
+      text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .file-input-wrapper input[type="file"]::file-selector-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+
+    .file-input-zone:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-color: #764ba2;
+      transform: translateY(-2px);
     }
-    .file-info {
-      color: #718096;
-      font-size: 0.9em;
-      margin-top: 12px;
-      font-weight: 500;
+
+    .file-input-zone input[type="file"] {
+      display: none;
     }
-    .file-info i {
+
+    .file-input-icon {
+      font-size: 3rem;
       color: #667eea;
-      margin-right: 6px;
+      margin-bottom: 1rem;
     }
-    .loading-container {
-      background: #ffffff;
-      padding: 40px;
-      border-radius: 25px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-      max-width: 650px;
-      margin: 30px auto;
-      border: 1px solid rgba(102, 126, 234, 0.1);
-    }
-    #progress-text {
+
+    .file-input-text {
+      font-weight: 600;
       color: #2d3748;
-      font-size: 1.15em;
-      margin-top: 15px;
+      margin-bottom: 0.3rem;
+    }
+
+    .file-input-hint {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+      color: white;
+    }
+
+    /* ===== LOADING STATE ===== */
+    #loading {
+      display: none;
+      background: white;
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .loading-content {
+      margin-bottom: 2rem;
+    }
+
+    .spinner {
+      font-size: 3rem;
+      color: #667eea;
+      margin-bottom: 1.5rem;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-text {
+      font-size: 0.95rem;
+      color: #718096;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress {
+      background: #e0e0e0;
+      border-radius: 10px;
+      height: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    #cancel-alert {
+      display: none;
+      background: #fee;
+      border: 1px solid #faa;
+      color: #c33;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
       font-weight: 600;
     }
-    .loading-title {
-      color: #2d3748;
-      font-size: 1.3em;
-      margin-bottom: 15px;
-      font-weight: 700;
-    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
     @media (max-width: 768px) {
-      .main-title {
+      .navbar-custom {
+        padding: 0.8rem 0;
+      }
+
+      .navbar-brand {
+        font-size: 1.2rem;
+      }
+
+      .navbar-brand i {
+        font-size: 1.5rem;
+      }
+
+      .nav-user {
+        gap: 0.7rem;
+      }
+
+      .nav-user span {
+        font-size: 0.8rem;
+        display: none;
+      }
+
+      .nav-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .main-content {
+        padding: 1.5rem 1rem;
+      }
+
+      .hero {
+        margin-bottom: 2rem;
+      }
+
+      .hero-icon {
+        font-size: 3rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .hero p {
+        font-size: 0.95rem;
+      }
+
+      .form-card {
+        padding: 1.8rem;
+        border-radius: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .form-control, .form-select {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+      }
+
+      .file-input-zone {
+        padding: 1.5rem 1rem;
+      }
+
+      .file-input-icon {
         font-size: 2.5rem;
       }
-      .subtitle {
+
+      .btn-primary {
+        padding: 0.9rem 1.5rem;
+        font-size: 0.95rem;
+      }
+
+      #loading {
+        padding: 2rem 1.5rem;
+      }
+
+      .spinner {
+        font-size: 2.5rem;
+      }
+
+      .loading-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      body {
+        min-height: 100vh;
+      }
+
+      .navbar-custom {
+        padding: 0.6rem 0;
+      }
+
+      .navbar-brand {
         font-size: 1rem;
-        padding: 0 15px;
       }
-      .upload-form {
-        padding: 30px 25px;
-        margin: 0 15px;
+
+      .navbar-brand i {
+        font-size: 1.2rem;
       }
-      .logo-icon {
-        font-size: 3rem;
+
+      .nav-user {
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .nav-user span {
+        display: none;
+      }
+
+      .nav-btn {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.65rem;
+        flex: 1;
+        text-align: center;
+      }
+
+      .main-content {
+        padding: 1rem 0.8rem;
+      }
+
+      .hero {
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .hero p {
+        font-size: 0.85rem;
+      }
+
+      .form-card {
+        padding: 1.3rem;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-control, .form-select {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+
+      .help-text {
+        font-size: 0.75rem;
+        margin-top: 0.4rem;
+      }
+
+      .file-input-zone {
+        padding: 1.2rem 0.8rem;
+        border-radius: 10px;
+      }
+
+      .file-input-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .file-input-text {
+        font-size: 0.85rem;
+      }
+
+      .file-input-hint {
+        font-size: 0.75rem;
+      }
+
+      .btn-primary {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+      }
+
+      .btn-danger {
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      #loading {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+      }
+
+      .loading-content {
+        margin-bottom: 1.5rem;
+      }
+
+      .spinner {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .loading-title {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .progress-text {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+      }
+
+      .progress {
+        height: 8px;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .navbar-brand {
+        font-size: 0.9rem;
+      }
+
+      .nav-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.6rem;
+      }
+
+      .hero h1 {
+        font-size: 1.2rem;
+      }
+
+      .form-card {
+        padding: 1rem;
+      }
+
+      .file-input-icon {
+        font-size: 1.8rem;
       }
     }
   </style>
 </head>
-<body class="bg-gradient text-center py-5">
-
-  <div class="logo-container">
-    <div class="logo-icon">
-      <i class="fas fa-video"></i>
-    </div>
-    <h1 class="main-title">VidSummify</h1>
-    <p class="subtitle">
-      Transform your videos into concise summaries with AI-powered transcription
-    </p>
-  </div>
-
-  <!-- Cancel alert -->
-  <div id="cancel-alert" class="alert alert-danger fw-bold" role="alert">
-    <i class="fas fa-times-circle"></i> Processing canceled by user. Redirecting...
-  </div>
-
-  <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
-    <div class="file-input-wrapper">
-      <label for="videoFile" class="file-input-label">
-        <i class="fas fa-cloud-upload-alt"></i> Select Video File
-      </label>
-      <input type="file" name="video" id="videoFile" accept=".mp4" class="form-control form-control-lg" required>
-      <div class="file-info">
-        <i class="fas fa-info-circle"></i> Only MP4 files are supported
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar-custom">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <i class="fas fa-video"></i> VidSummify
+        </a>
+        <div class="nav-user">
+          <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+          <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="{{ url_for('history') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-history"></i> History
+          </a>
+          <a href="{{ url_for('auth.logout') }}" class="nav-btn nav-btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary btn-lg w-100">
-      <i class="fas fa-rocket"></i> Upload & Process
-    </button>
-  </form>
+  </nav>
 
-  <div id="loading" class="loading-container mt-4">
-    <div class="text-center">
-      <i class="fas fa-cog fa-spin" style="font-size: 3.5rem; color: #667eea; margin-bottom: 25px;"></i>
-      <div class="loading-title">
-        Processing your video...
-      </div>
-      <div id="progress-text" class="mt-3"></div>
-
-      <!-- Progress Bar -->
-      <div class="progress mt-4" style="width: 100%; margin: 0 auto;">
-        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated"
-             role="progressbar" style="width: 0%">0%</div>
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="container-form">
+      <!-- HERO SECTION -->
+      <div class="hero">
+        <div class="hero-icon">
+          <i class="fas fa-wand-magic-sparkles"></i>
+        </div>
+        <h1>Transform Videos into Summaries</h1>
+        <p>Upload your video and let AI create transcripts and summaries instantly</p>
       </div>
 
-      <!-- Cancel Button -->
-      <button id="cancelBtn" class="btn btn-danger mt-4">
-        <i class="fas fa-stop-circle"></i> Cancel Processing
-      </button>
+      <!-- CANCEL ALERT -->
+      <div id="cancel-alert">
+        <i class="fas fa-times-circle me-2"></i> Processing canceled. Redirecting...
+      </div>
+
+      <!-- FORM CARD -->
+      <div class="form-card">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+          <!-- Language Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-globe"></i> Transcription Language
+            </label>
+            <select name="language" id="languageSelect" class="form-select" required>
+              <option value="">Auto-Detect Language</option>
+              {% for code, name in languages.items() %}
+                <option value="{{ code }}" {% if code == 'en' %}selected{% endif %}>{{ name }}</option>
+              {% endfor %}
+            </select>
+            <span class="help-text">
+              <i class="fas fa-info-circle me-1"></i> Select a language or use auto-detection
+            </span>
+          </div>
+
+          <!-- Output Language Selection -->
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-language"></i> Preferred Output Language
+            </label>
+            <select name="output_language" id="outputLanguageSelect" class="form-select" required>
+              {% for code, name in languages.items() %}
+                <option value="{{ code }}" {% if code == 'en' %}selected{% endif %}>{{ name }}</option>
+              {% endfor %}
+            </select>
+            <span class="help-text">
+              <i class="fas fa-info-circle me-1"></i> Choose the language for your summary output
+            </span>
+          </div>
+
+          <!-- File Upload -->
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-file-video"></i> Select Video (MP4)
+            </label>
+            <div class="file-input-zone" onclick="document.getElementById('videoFile').click()">
+              <div class="file-input-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <div class="file-input-text">Click to upload or drag and drop</div>
+              <div class="file-input-hint">MP4 format, Max 500MB</div>
+              <input type="file" name="video" id="videoFile" accept=".mp4" required>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-rocket me-2"></i> Upload & Process
+          </button>
+        </form>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div id="loading">
+        <div id="cancel-alert-loading" style="display:none; margin-bottom:1.5rem;">
+          <i class="fas fa-times-circle me-2"></i> Processing canceled. Redirecting...
+        </div>
+        <div class="loading-content">
+          <div class="spinner">
+            <i class="fas fa-cog fa-spin"></i>
+          </div>
+          <div class="loading-title">Processing Your Video</div>
+          <div class="progress-text" id="progress-text">Starting upload...</div>
+        </div>
+        <div class="progress">
+          <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <button id="cancelBtn" class="btn-danger">
+          <i class="fas fa-stop-circle me-2"></i> Cancel Processing
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
-    document.getElementById("uploadForm").addEventListener("submit", function() {
+    // Handle form submission
+    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.getElementById("uploadForm").parentElement.style.display = "none";
       document.getElementById("loading").style.display = "block";
+
+      const formData = new FormData(this);
       const progressText = document.getElementById("progress-text");
       const progressBar = document.getElementById("progress-bar");
       const cancelBtn = document.getElementById("cancelBtn");
-      const cancelAlert = document.getElementById("cancel-alert");
       let canceled = false;
 
+      // Start progress polling
       const interval = setInterval(async () => {
         if (canceled) return;
 
@@ -228,35 +775,29 @@
           const response = await fetch("/progress");
           const data = await response.json();
 
-          // Update text
           progressText.textContent = `${data.stage} (${data.percent}%)`;
-
-          // Update bar
           progressBar.style.width = `${data.percent}%`;
-          progressBar.textContent = `${data.percent}%`;
 
           // Color transitions
           if (data.percent < 40) {
-            progressBar.className = "progress-bar bg-info progress-bar-striped progress-bar-animated";
+            progressBar.style.background = 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)';
           } else if (data.percent < 80) {
-            progressBar.className = "progress-bar bg-warning progress-bar-striped progress-bar-animated";
+            progressBar.style.background = 'linear-gradient(90deg, #fa709a 0%, #fee140 100%)';
           } else {
-            progressBar.className = "progress-bar bg-success progress-bar-striped progress-bar-animated";
+            progressBar.style.background = 'linear-gradient(90deg, #2ed573 0%, #00f2fe 100%)';
           }
 
-          // Stop polling on completion
           if (data.percent >= 100) {
             clearInterval(interval);
-            progressText.textContent = "✅ Completed successfully!";
-            progressBar.textContent = "100%";
-            progressBar.className = "progress-bar bg-success";
+            progressText.textContent = "✓ Completed successfully!";
+            progressBar.style.background = 'linear-gradient(90deg, #2ed573 0%, #00f2fe 100%)';
           }
         } catch (error) {
           console.error("Error fetching progress:", error);
         }
       }, 1000);
 
-      // Cancel processing (frontend + backend)
+      // Cancel button handler
       cancelBtn.addEventListener("click", async () => {
         canceled = true;
         clearInterval(interval);
@@ -267,19 +808,99 @@
           console.error("Error canceling:", error);
         }
 
-        progressText.textContent = "❌ Processing canceled by user.";
-        progressBar.className = "progress-bar bg-danger";
+        document.getElementById("cancel-alert-loading").style.display = "block";
+        progressText.textContent = "Processing canceled";
         progressBar.style.width = "100%";
-        progressBar.textContent = "Canceled";
+        progressBar.style.background = '#e74c3c';
 
-        // Show cancel alert and redirect after 3 seconds
-        cancelAlert.style.display = "block";
         setTimeout(() => {
           window.location.href = "/";
-        }, 3000);
+        }, 2000);
+      });
+
+      // Submit the form
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+          const uploadPercent = Math.round((e.loaded / e.total) * 30);
+          progressBar.style.width = uploadPercent + "%";
+        }
+      });
+
+      xhr.addEventListener("load", () => {
+        clearInterval(interval);
+        try {
+          const response = JSON.parse(xhr.responseText);
+          
+          if (xhr.status === 200 && response.success) {
+            progressText.textContent = "✓ Processing completed! Redirecting...";
+            progressBar.style.width = "100%";
+            progressBar.style.background = 'linear-gradient(90deg, #2ed573 0%, #00f2fe 100%)';
+            
+            // Redirect to result page
+            setTimeout(() => {
+              window.location.href = "/result";
+            }, 1500);
+          } else if (response.error) {
+            progressText.textContent = "❌ Error: " + response.error;
+            progressBar.style.background = '#e74c3c';
+            console.error("Upload error:", response.error);
+          } else {
+            progressText.textContent = "❌ Error: " + (xhr.statusText || "Upload failed");
+            progressBar.style.background = '#e74c3c';
+            console.error("Upload error:", xhr.status, xhr.responseText);
+          }
+        } catch (parseError) {
+          // Response is not JSON, show raw error
+          progressText.textContent = "❌ Error: " + xhr.statusText;
+          progressBar.style.background = '#e74c3c';
+          console.error("Parse error:", parseError, "Response:", xhr.responseText);
+        }
+      });
+
+      xhr.addEventListener("error", () => {
+        clearInterval(interval);
+        progressText.textContent = "❌ Network error occurred";
+        progressBar.style.background = '#e74c3c';
+        console.error("Network error");
+      });
+
+      xhr.open("POST", "/upload", true);
+      xhr.send(formData);
+    });
+
+    // Drag and drop for file input
+    const fileZone = document.querySelector(".file-input-zone");
+    const fileInput = document.getElementById("videoFile");
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+      fileZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ["dragenter", "dragover"].forEach(eventName => {
+      fileZone.addEventListener(eventName, () => {
+        fileZone.style.borderColor = "#764ba2";
+        fileZone.style.background = "linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)";
       });
     });
-  </script>
 
+    ["dragleave", "drop"].forEach(eventName => {
+      fileZone.addEventListener(eventName, () => {
+        fileZone.style.borderColor = "#667eea";
+        fileZone.style.background = "linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)";
+      });
+    });
+
+    fileZone.addEventListener("drop", (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      fileInput.files = files;
+    });
+  </script>
 </body>
 </html>

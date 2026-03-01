@@ -133,22 +133,209 @@
       }
 
       .result-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .result-title i {
+        margin-right: 10px;
+        font-size: 1.5rem;
       }
 
       .content-card {
         min-height: auto;
         padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .content-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+      }
+
+      .content-card p {
+        font-size: 0.95em;
+        line-height: 1.6;
+      }
+
+      .audio-card {
+        padding: 20px;
+      }
+
+      .audio-card h4 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+      }
+
+      .back-button {
+        margin-top: 30px;
+      }
+
+      .btn-lg {
+        padding: 0.65rem 1rem;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .video-rectangle {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 15px;
+      }
+
+      audio {
+        width: 100%;
+        max-width: 100%;
+        height: 45px;
+        border-radius: 12px;
+      }
+
+      .result-title {
+        font-size: 1.4rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .result-title i {
+        margin-right: 8px;
+        font-size: 1.2rem;
+      }
+
+      .content-card {
+        min-height: auto;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .content-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .content-card h3 i {
+        margin-right: 8px;
+        font-size: 1rem;
+      }
+
+      .content-card p {
+        font-size: 0.9em;
+        line-height: 1.5;
+        max-height: 300px !important;
+      }
+
+      .audio-card {
+        padding: 15px;
+        border-left: 4px solid #2ed573;
+      }
+
+      .audio-card h4 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .audio-card h4 i {
+        margin-right: 8px;
+        font-size: 1rem;
+      }
+
+      .back-button {
+        margin-top: 20px;
+      }
+
+      .btn-lg {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.85rem;
+      }
+
+      /* Metrics card adjustments */
+      .card {
+        border-radius: 12px;
+      }
+    }
+
+    /* Metrics cards responsive */
+    .metrics-row .card {
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .metrics-row .card h6 {
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    .metrics-row .card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 992px) {
+      .metrics-row .col-md-3 {
+        flex: 0 0 50%;
+      }
+
+      .metrics-row .card h3 {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .metrics-row .col-md-3 {
+        flex: 0 0 100%;
+      }
+
+      .metrics-row .card {
+        padding: 15px !important;
+      }
+
+      .metrics-row .card h6 {
+        font-size: 0.75rem;
+        margin-bottom: 8px !important;
+      }
+
+      .metrics-row .card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0 !important;
       }
     }
   </style>
 </head>
 <body class="bg-gradient">
 
-<div class="container py-5">
+<div class="container py-5" style="padding-left: 15px; padding-right: 15px;">
   <h1 class="result-title text-center">
     <i class="fas fa-file-alt"></i> Results for: {{ video_name }}
   </h1>
+
+  <!-- Processing Metrics -->
+  <div class="row mb-4 metrics-row">
+    <div class="col-md-3 mb-3">
+      <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
+        <h6 class="text-white-50 mb-2"><i class="fas fa-clock"></i> Processing Time</h6>
+        <h3 class="mb-0">{{ processing_time }}s</h3>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
+        <h6 class="text-white-50 mb-2"><i class="fas fa-chart-pie"></i> Compression Ratio</h6>
+        <h3 class="mb-0">{{ (compression_ratio * 100)|round(1) }}%</h3>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
+        <h6 class="text-white-50 mb-2"><i class="fas fa-file-lines"></i> Transcript Length</h6>
+        <h3 class="mb-0">{{ transcript_words }} words</h3>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
+        <h6 class="text-white-50 mb-2"><i class="fas fa-wand-magic-sparkles"></i> Summary Length</h6>
+        <h3 class="mb-0">{{ summary_words }} words</h3>
+      </div>
+    </div>
+  </div>
 
   <!-- Video (rectangular and centered) -->
   <div class="video-wrapper">
@@ -159,14 +346,14 @@
   </div>
 
   <div class="row">
-    <div class="col-md-6 mb-4">
+    <div class="col-lg-6 col-12 mb-4">
       <div class="card content-card transcript-card">
         <h3><i class="fas fa-file-alt"></i> Transcribed Text</h3>
         <p style="white-space: pre-wrap; max-height: 400px; overflow-y: auto; color: #2d3748;">{{ transcript }}</p>
       </div>
     </div>
 
-    <div class="col-md-6 mb-4">
+    <div class="col-lg-6 col-12 mb-4">
       <div class="card content-card summary-card">
         <h3><i class="fas fa-magic"></i> Summary</h3>
         <p style="white-space: pre-wrap; max-height: 400px; overflow-y: auto; color: #2d3748;">{{ summary }}</p>

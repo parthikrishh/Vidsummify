@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing History - Vidsummify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 10px;
+        }
+
+        .history-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+
+        .history-table {
+            margin-bottom: 0;
+        }
+
+        .history-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .history-table thead th {
+            border: none;
+            padding: 15px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .history-table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        .history-table tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .video-name {
+            color: #667eea;
+            font-weight: 600;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .language-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .metrics-badge {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #333;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+            margin-bottom: 5px;
+        }
+
+        .date-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons a {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #5568d3;
+            color: white;
+        }
+
+        .btn-download {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #3a94db;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-text {
+            color: #999;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .pagination .page-link {
+            color: #667eea;
+            border-color: #e0e0e0;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 0;
+                margin-bottom: 30px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+                margin-bottom: 8px;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .btn-group-custom {
+                width: 100%;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .btn-group-custom a {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .history-container {
+                padding: 20px;
+            }
+
+            .history-table {
+                font-size: 0.9rem;
+            }
+
+            .history-table thead th {
+                padding: 12px;
+                font-size: 0.8rem;
+            }
+
+            .history-table tbody td {
+                padding: 12px;
+            }
+
+            .video-name {
+                max-width: 150px;
+            }
+
+            .language-badge {
+                padding: 4px 10px;
+                font-size: 0.8rem;
+            }
+
+            .metrics-badge {
+                font-size: 0.75rem;
+                margin-right: 5px;
+                margin-bottom: 4px;
+            }
+
+            .action-buttons {
+                gap: 6px;
+                flex-direction: column;
+            }
+
+            .action-buttons a {
+                padding: 5px 10px;
+                font-size: 0.75rem;
+            }
+
+            .pagination {
+                gap: 3px;
+            }
+
+            .pagination .page-link {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 13px;
+            }
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .header {
+                padding: 15px 0;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 6px;
+            }
+
+            .header p {
+                font-size: 0.85rem;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-group-custom {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .btn-group-custom a {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                flex: 1;
+                text-align: center;
+            }
+
+            .history-container {
+                padding: 15px;
+                border-radius: 12px;
+                margin-bottom: 30px;
+            }
+
+            /* Convert table to card layout on mobile */
+            .history-table {
+                display: block;
+                border: none;
+            }
+
+            .history-table thead {
+                display: none;
+            }
+
+            .history-table tbody {
+                display: block;
+            }
+
+            .history-table tbody tr {
+                display: block;
+                border: 1px solid #e0e0e0;
+                border-radius: 10px;
+                margin-bottom: 15px;
+                padding: 15px;
+                background: #f9f9f9;
+            }
+
+            .history-table tbody tr:hover {
+                background-color: #f0f0f0;
+            }
+
+            .history-table tbody td {
+                display: block;
+                border: none;
+                padding: 8px 0;
+                text-align: left;
+                position: relative;
+                padding-left: 0;
+            }
+
+            .history-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #667eea;
+                display: inline-block;
+                width: 120px;
+                margin-right: 10px;
+                font-size: 0.8rem;
+            }
+
+            .video-name {
+                max-width: 100%;
+                display: inline;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+
+            .language-badge {
+                display: inline-block;
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+
+            .metrics-badge {
+                display: inline-block;
+                font-size: 0.7rem;
+                margin-right: 4px;
+                margin-bottom: 3px;
+            }
+
+            .date-text {
+                font-size: 0.8rem;
+            }
+
+            .action-buttons {
+                display: flex;
+                gap: 5px;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid #e0e0e0;
+            }
+
+            .action-buttons a {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+                flex: 1;
+                text-align: center;
+            }
+
+            .empty-state {
+                padding: 40px 15px;
+            }
+
+            .empty-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+            }
+
+            .empty-text {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .empty-state .btn-lg {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .pagination {
+                gap: 2px;
+                margin-top: 20px;
+            }
+
+            .pagination .page-link {
+                padding: 0.35rem 0.5rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .btn-group-custom a {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+            .history-table tbody td {
+                padding: 6px 0;
+            }
+
+            .history-table tbody td::before {
+                width: 100px;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            .action-buttons a {
+                padding: 3px 6px;
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="top-nav">
+                <div>
+                    <h1><i class="fas fa-history"></i> Processing History</h1>
+                    <p>View all your video processing records</p>
+                </div>
+                <div class="btn-group-custom">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Upload
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if history.items %}
+            <div class="history-container">
+                <table class="table history-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-file-video"></i> Video Name</th>
+                            <th><i class="fas fa-globe"></i> Language</th>
+                            <th><i class="fas fa-timer"></i> Processing Time</th>
+                            <th><i class="fas fa-compress"></i> Compression</th>
+                            <th><i class="fas fa-calendar"></i> Date</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history.items %}
+                            <tr>
+                                <td data-label="Video Name">
+                                    <span class="video-name" title="{{ item.video_filename }}">
+                                        {{ item.video_filename }}
+                                    </span>
+                                </td>
+                                <td data-label="Language">
+                                    <span class="language-badge">{{ item.language }}</span>
+                                </td>
+                                <td data-label="Processing Time">
+                                    <span class="metrics-badge">{{ item.processing_time|round(2) }}s</span>
+                                </td>
+                                <td data-label="Compression">
+                                    <span class="metrics-badge">{{ (item.compression_ratio * 100)|round(1) }}%</span>
+                                </td>
+                                <td data-label="Date">
+                                    <span class="date-text">
+                                        {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </span>
+                                </td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <a href="{{ item.summary_path }}" class="btn-view" title="View Summary" target="_blank">
+                                            <i class="fas fa-eye"></i> Summary
+                                        </a>
+                                        <a href="{{ item.transcript_path }}" class="btn-download" title="Download Transcript" target="_blank">
+                                            <i class="fas fa-download"></i> Transcript
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                {% if history.pages > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {% if history.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('history', page=history.prev_num) }}">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            {% for page_num in history.iter_pages() %}
+                                {% if page_num %}
+                                    {% if page_num == history.page %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if history.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('history', page=history.next_num) }}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="history-container">
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <p class="empty-text">No processing history yet</p>
+                    <p style="color: #ccc; margin-bottom: 30px;">Start by uploading your first video</p>
+                    <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Upload Video
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

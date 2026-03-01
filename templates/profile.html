@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Vidsummify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            margin: 0 auto 20px;
+        }
+
+        .profile-username {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .profile-email {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .profile-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .stat-icon.videos {
+            color: #667eea;
+        }
+
+        .stat-icon.time {
+            color: #4facfe;
+        }
+
+        .stat-icon.compression {
+            color: #fa709a;
+        }
+
+        .stat-icon.language {
+            color: #30cfd0;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a202c;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .activity-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-title i {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-info h6 {
+            color: #1a202c;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .activity-info p {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .activity-time {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .empty-activity {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .btn-group-custom {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            color: #667eea;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 0;
+                margin-bottom: 30px;
+            }
+
+            .profile-card {
+                padding: 25px;
+                margin-bottom: 25px;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+                margin: 0 auto 15px;
+            }
+
+            .profile-username {
+                font-size: 1.6rem;
+                margin-bottom: 8px;
+            }
+
+            .profile-email {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .profile-meta {
+                gap: 15px;
+                padding-top: 15px;
+                margin-top: 15px;
+            }
+
+            .meta-item {
+                flex: 1;
+            }
+
+            .meta-label {
+                font-size: 0.8rem;
+            }
+
+            .meta-value {
+                font-size: 1.2rem;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                padding: 25px;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+                margin-bottom: 12px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .recent-activity {
+                padding: 25px;
+            }
+
+            .activity-title {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+
+            .activity-item {
+                padding: 12px 0;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .nav-buttons {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .header-title h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                font-size: 14px;
+            }
+
+            .header {
+                padding: 15px 0;
+                margin-bottom: 20px;
+            }
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .profile-card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+
+            .profile-avatar {
+                width: 90px;
+                height: 90px;
+                font-size: 2.2rem;
+                margin: 0 auto 12px;
+            }
+
+            .profile-username {
+                font-size: 1.3rem;
+                margin-bottom: 6px;
+            }
+
+            .profile-email {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
+            }
+
+            .profile-meta {
+                gap: 10px;
+                padding-top: 12px;
+                margin-top: 12px;
+                flex-wrap: wrap;
+            }
+
+            .meta-item {
+                flex: 0 0 calc(50% - 5px);
+            }
+
+            .meta-label {
+                font-size: 0.75rem;
+            }
+
+            .meta-value {
+                font-size: 1rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+            .stat-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-3px);
+            }
+
+            .stat-icon {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+            }
+
+            .recent-activity {
+                padding: 20px 15px;
+                border-radius: 12px;
+            }
+
+            .activity-title {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+
+            .activity-title i {
+                margin-right: 8px;
+            }
+
+            .activity-item {
+                padding: 10px 0;
+                border-bottom: 1px solid #e0e0e0;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .activity-info {
+                width: 100%;
+            }
+
+            .activity-info h6 {
+                font-size: 0.9rem;
+                margin-bottom: 4px;
+            }
+
+            .activity-info p {
+                font-size: 0.85rem;
+            }
+
+            .activity-time {
+                font-size: 0.8rem;
+            }
+
+            .empty-activity {
+                padding: 30px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn-group-custom {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .btn-group-custom .btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .nav-buttons {
+                justify-content: center;
+                width: 100%;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .nav-buttons .btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+                flex: 0 0 auto;
+            }
+
+            .header-title h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-user-circle"></i> User Profile</h1>
+                </div>
+                <div class="nav-buttons">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Upload
+                    </a>
+                    <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-username">{{ current_user.username }}</div>
+            <div class="profile-email">{{ current_user.email }}</div>
+            <div class="profile-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Member Since</div>
+                    <div class="meta-value">{{ current_user.created_at.strftime('%B %Y') }}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Total Videos</div>
+                    <div class="meta-value">{{ stats.total_videos }}</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Last Login</div>
+                    <div class="meta-value">
+                        {% if current_user.last_login %}
+                            {{ current_user.last_login.strftime('%b %d, %Y') }}
+                        {% else %}
+                            First Login
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-video stat-icon videos"></i>
+                <div class="stat-label">Videos Processed</div>
+                <div class="stat-value">{{ stats.total_videos }}</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-clock stat-icon time"></i>
+                <div class="stat-label">Total Processing Time</div>
+                <div class="stat-value">{{ (stats.total_processing_time / 60)|round(1) }} min</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-compress stat-icon compression"></i>
+                <div class="stat-label">Avg Compression Ratio</div>
+                <div class="stat-value">{{ (stats.avg_compression_ratio * 100)|round(1) }}%</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-globe stat-icon language"></i>
+                <div class="stat-label">Preferred Language</div>
+                <div class="stat-value">{{ stats.preferred_language }}</div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <div class="activity-title">
+                <i class="fas fa-history"></i> Recent Activity
+            </div>
+            
+            {% if history %}
+                {% for item in history %}
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h6>
+                                <i class="fas fa-file-video"></i> 
+                                {{ item.video_filename }}
+                            </h6>
+                            <p>
+                                <span class="badge bg-light text-dark">{{ item.language }}</span>
+                                <span class="ms-2">⏱️ {{ item.processing_time|round(2) }}s</span>
+                                <span class="ms-2">📊 {{ (item.compression_ratio * 100)|round(1) }}%</span>
+                            </p>
+                        </div>
+                        <div class="activity-time">
+                            {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-activity">
+                    <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                    <p>No recent activity. Start uploading videos to see your stats!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,41 +1,64 @@
-# Virtual environment
+# =========================
+# Virtual Environments
+# =========================
 venv/
 env/
 ENV/
+.venv/
 
-# Python cache
+# =========================
+# Python Cache
+# =========================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 
-# Generated results
-static/results/
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
 
-# Uploaded videos
+# =========================
+# Generated Results
+# =========================
+static/results/
 static/videos/
 
-# Temporary files
+# =========================
+# Temporary Files
+# =========================
 temp_chunk_*.wav
 *.tmp
 *.temp
 
-# IDE files
+# =========================
+# ML Models / Weights
+# =========================
+models/
+*.pt
+*.pth
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# IDE / Editor Files
+# =========================
 .idea/
 .vscode/
 *.swp
 *.swo
 *~
 
-# OS files
+# =========================
+# OS Files
+# =========================
 .DS_Store
 Thumbs.db
-desktop.ini# Environment variables
-.env
-.env.local# Model cache (if downloaded)
-models/
-*.pt
-*.pth# Logs
-*.log
-logs/
+desktop.ini

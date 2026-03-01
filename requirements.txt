@@ -1,4 +1,8 @@
 flask
+flask-sqlalchemy
+flask-login
+flask-migrate
+werkzeug
 moviepy==1.0.3
 torch
 transformers
@@ -7,5 +11,6 @@ pydub
 gTTS
 nltk
 faster-whisper
-werkzeug
-
+langdetect
+textblob
+python-dotenv
