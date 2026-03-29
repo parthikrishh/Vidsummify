@@ -2,23 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - Vidsummify</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="csrf-token" content="{{ csrf_token() }}">    <title>User Profile - Vidsummify</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
 
-        .header {
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px 0;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #3b82f6 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-user span {
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn-secondary {
+            background: #f0f0f0;
+            color: #2d3748;
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav-btn-secondary:hover {
+            background: #e0e0e0;
+            color: #2d3748;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .nav-btn-danger {
+            color: #e74c3c;
+        }
+
+        /* ===== PAGE CONTAINER ===== */
+        .page-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
         }
 
         .profile-card {
@@ -28,19 +124,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
             text-align: center;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-            margin: 0 auto 20px;
         }
 
         .profile-username {
@@ -79,7 +162,7 @@
         .meta-value {
             font-size: 1.3rem;
             font-weight: 700;
-            color: #667eea;
+            color: #3b82f6;
         }
 
         .stats-container {
@@ -108,7 +191,7 @@
         }
 
         .stat-icon.videos {
-            color: #667eea;
+            color: #3b82f6;
         }
 
         .stat-icon.time {
@@ -136,92 +219,17 @@
             color: #1a202c;
         }
 
-        .recent-activity {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .activity-title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1a202c;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-        }
-
-        .activity-title i {
-            color: #667eea;
-            margin-right: 10px;
-        }
-
-        .activity-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-info h6 {
-            color: #1a202c;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .activity-info p {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 0;
-        }
-
-        .activity-time {
-            color: #667eea;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .empty-activity {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-        }
-
-        .btn-group-custom {
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title h1 {
-            color: #667eea;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            margin-bottom: 0;
-        }
-
         @media (max-width: 768px) {
-            .header {
-                padding: 20px 0;
-                margin-bottom: 30px;
+            .page-container {
+                margin: 2rem auto;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .page-header p {
+                font-size: 1rem;
             }
 
             .profile-card {
@@ -282,46 +290,35 @@
             .stat-value {
                 font-size: 1.5rem;
             }
+        }
 
-            .recent-activity {
-                padding: 25px;
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
-            .activity-title {
+            h1 {
                 font-size: 1.3rem;
-                margin-bottom: 20px;
             }
 
-            .activity-item {
-                padding: 12px 0;
-                flex-wrap: wrap;
-                gap: 10px;
+            h2 {
+                font-size: 1.1rem;
             }
 
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .nav-buttons {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .header-title h1 {
-                font-size: 1.8rem;
+            .card {
+                padding: 1rem;
             }
         }
 
         @media (max-width: 576px) {
             body {
                 font-size: 14px;
-            }
-
-            .header {
-                padding: 15px 0;
-                margin-bottom: 20px;
             }
 
             .container {
@@ -398,108 +395,456 @@
             .stat-value {
                 font-size: 1.3rem;
             }
+        }
 
-            .recent-activity {
-                padding: 20px 15px;
-                border-radius: 12px;
+        /* Profile Edit Styles */
+        .profile-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            border: 3px solid white;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .avatar-edit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .profile-username-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .username-edit-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .username-edit-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .username-edit-form {
+            margin-bottom: 15px;
+        }
+
+        .username-edit-form input {
+            padding: 10px 15px;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-save, .btn-cancel {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #2ed573 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 213, 115, 0.4);
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Account Settings Section */
+        .settings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .settings-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-card h3 i {
+            color: #3b82f6;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-info {
+            flex: 1;
+        }
+
+        .settings-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 5px;
+        }
+
+        .settings-info p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .settings-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            min-width: 170px;
+            text-align: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .settings-btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .settings-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .settings-btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .settings-btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Modal Styles */
+        .settings-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .settings-modal {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .settings-modal h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-modal h4 i {
+            color: #3b82f6;
+        }
+
+        .settings-modal h4.danger i {
+            color: #ef4444;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .modal-btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .modal-btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .warning-text {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 15px;
+            color: #991b1b;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .warning-text i {
+            color: #ef4444;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 576px) {
+            .settings-card {
+                padding: 25px 20px;
             }
 
-            .activity-title {
-                font-size: 1.1rem;
-                margin-bottom: 15px;
-            }
-
-            .activity-title i {
-                margin-right: 8px;
-            }
-
-            .activity-item {
-                padding: 10px 0;
-                border-bottom: 1px solid #e0e0e0;
+            .settings-item {
                 flex-direction: column;
-                gap: 8px;
+                align-items: flex-start;
+                gap: 15px;
             }
 
-            .activity-info {
+            .settings-btn {
                 width: 100%;
+                text-align: center;
             }
 
-            .activity-info h6 {
-                font-size: 0.9rem;
-                margin-bottom: 4px;
-            }
-
-            .activity-info p {
-                font-size: 0.85rem;
-            }
-
-            .activity-time {
-                font-size: 0.8rem;
-            }
-
-            .empty-activity {
-                padding: 30px 15px;
-                font-size: 0.9rem;
-            }
-
-            .btn-group-custom {
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .btn-group-custom .btn {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.75rem;
-            }
-
-            .nav-buttons {
-                justify-content: center;
-                width: 100%;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .nav-buttons .btn {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.75rem;
-                flex: 0 0 auto;
-            }
-
-            .header-title h1 {
-                font-size: 1.4rem;
+            .settings-modal {
+                padding: 25px 20px;
+                margin: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="header-title">
-                    <h1><i class="fas fa-user-circle"></i> User Profile</h1>
-                </div>
-                <div class="nav-buttons">
-                    <a href="{{ url_for('home') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> New Upload
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+                <a href="{{ url_for('home') }}" class="navbar-brand">
+                    <i class="fas fa-video"></i> VidSummify
+                </a>
+                <div class="nav-user">
+                    <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+                    <a href="{{ url_for('home') }}" class="nav-btn nav-btn-primary">
+                        <i class="fas fa-upload"></i> Upload
                     </a>
-                    <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                    <a href="{{ url_for('settings') }}" class="nav-btn nav-btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="{{ url_for('history') }}" class="nav-btn nav-btn-secondary">
                         <i class="fas fa-history"></i> History
                     </a>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                    <a href="{{ url_for('auth.logout') }}" class="nav-btn nav-btn-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <div class="container">
+    <!-- Page Container -->
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="fas fa-user-circle"></i> User Profile</h1>
+            <p>Manage your account and view your statistics</p>
+        </div>
+
         <!-- Profile Card -->
         <div class="profile-card">
-            <div class="profile-avatar">
-                <i class="fas fa-user"></i>
+            <!-- Profile Photo with Edit -->
+            <div class="profile-avatar-container">
+                <div class="profile-avatar" id="profileAvatar">
+                    {% if current_user.profile_photo %}
+                        <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile" class="avatar-image">
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <label for="photoInput" class="avatar-edit-btn" title="Change Photo">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="photoInput" accept="image/*" style="display: none;">
             </div>
-            <div class="profile-username">{{ current_user.username }}</div>
+            
+            <!-- Username with Edit -->
+            <div class="profile-username-container">
+                <div class="profile-username" id="displayUsername">{{ current_user.username }}</div>
+                <button class="username-edit-btn" onclick="toggleUsernameEdit()" title="Edit Username">
+                    <i class="fas fa-pen"></i>
+                </button>
+            </div>
+            
+            <!-- Username Edit Form (hidden by default) -->
+            <div class="username-edit-form" id="usernameEditForm" style="display: none;">
+                <input type="text" id="newUsernameInput" value="{{ current_user.username }}" maxlength="30" placeholder="Enter new username">
+                <div class="edit-buttons">
+                    <button class="btn-save" onclick="saveUsername()"><i class="fas fa-check"></i> Save</button>
+                    <button class="btn-cancel" onclick="cancelUsernameEdit()"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+            </div>
+            
             <div class="profile-email">{{ current_user.email }}</div>
             <div class="profile-meta">
                 <div class="meta-item">
@@ -550,38 +895,368 @@
             </div>
         </div>
 
-        <!-- Recent Activity -->
-        <div class="recent-activity">
-            <div class="activity-title">
-                <i class="fas fa-history"></i> Recent Activity
+        <!-- Account Settings Section -->
+        <div class="settings-card">
+            <h3><i class="fas fa-cog"></i> Account Settings</h3>
+            
+            <div class="settings-item">
+                <div class="settings-info">
+                    <h4><i class="fas fa-lock" style="color: #3b82f6; margin-right: 8px;"></i> Password</h4>
+                    <p>Change your account password for security</p>
+                </div>
+                <button class="settings-btn settings-btn-primary" onclick="showChangePasswordModal()">
+                    <i class="fas fa-key"></i> Change Password
+                </button>
             </div>
             
-            {% if history %}
-                {% for item in history %}
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <h6>
-                                <i class="fas fa-file-video"></i> 
-                                {{ item.video_filename }}
-                            </h6>
-                            <p>
-                                <span class="badge bg-light text-dark">{{ item.language }}</span>
-                                <span class="ms-2">⏱️ {{ item.processing_time|round(2) }}s</span>
-                                <span class="ms-2">📊 {{ (item.compression_ratio * 100)|round(1) }}%</span>
-                            </p>
-                        </div>
-                        <div class="activity-time">
-                            {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-activity">
-                    <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 15px;"></i>
-                    <p>No recent activity. Start uploading videos to see your stats!</p>
+            <div class="settings-item">
+                <div class="settings-info">
+                    <h4><i class="fas fa-envelope" style="color: #3b82f6; margin-right: 8px;"></i> Email Address</h4>
+                    <p>Current: {{ current_user.email }}</p>
                 </div>
-            {% endif %}
+                <button class="settings-btn settings-btn-primary" onclick="showChangeEmailModal()">
+                    <i class="fas fa-edit"></i> Change Email
+                </button>
+            </div>
+            
+            <div class="settings-item">
+                <div class="settings-info">
+                    <h4><i class="fas fa-trash-alt" style="color: #ef4444; margin-right: 8px;"></i> Delete Account</h4>
+                    <p>Permanently delete your account and all data</p>
+                </div>
+                <button class="settings-btn settings-btn-danger" onclick="showDeleteAccountModal()">
+                    <i class="fas fa-trash"></i> Delete Account
+                </button>
+            </div>
         </div>
     </div>
+
+    <script>
+        // CSRF Token Setup
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        // Profile Photo Upload
+        document.getElementById('photoInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large. Maximum size is 5MB.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('photo', file);
+            
+            try {
+                const response = await fetch('/api/update-profile-photo', {
+                    method: 'POST',
+                    headers: csrfToken ? {'X-CSRFToken': csrfToken} : {},
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update avatar display
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.innerHTML = `<img src="${data.photo_url}" alt="Profile" class="avatar-image">`;
+                    alert('Profile photo updated successfully!');
+                } else {
+                    alert(data.error || 'Failed to update profile photo');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating profile photo');
+            }
+        });
+        
+        // Username Edit Functions
+        function toggleUsernameEdit() {
+            document.getElementById('usernameEditForm').style.display = 'block';
+            document.querySelector('.profile-username-container').style.display = 'none';
+            document.getElementById('newUsernameInput').focus();
+        }
+        
+        function cancelUsernameEdit() {
+            document.getElementById('usernameEditForm').style.display = 'none';
+            document.querySelector('.profile-username-container').style.display = 'flex';
+            document.getElementById('newUsernameInput').value = document.getElementById('displayUsername').textContent;
+        }
+        
+        async function saveUsername() {
+            const newUsername = document.getElementById('newUsernameInput').value.trim();
+            
+            if (!newUsername) {
+                alert('Username cannot be empty');
+                return;
+            }
+            
+            if (newUsername.length < 3) {
+                alert('Username must be at least 3 characters');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/update-username', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ username: newUsername })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update displays
+                    document.getElementById('displayUsername').textContent = data.username;
+                    document.querySelector('.nav-user span').innerHTML = `<i class="fas fa-user-circle me-1"></i> ${data.username}`;
+                    cancelUsernameEdit();
+                    alert('Username updated successfully!');
+                } else {
+                    alert(data.error || 'Failed to update username');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating username');
+            }
+        }
+        
+        // Allow Enter key to save username
+        document.getElementById('newUsernameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveUsername();
+            }
+        });
+
+        // ===== ACCOUNT SETTINGS FUNCTIONS =====
+        
+        // Change Password Modal
+        function showChangePasswordModal() {
+            const modal = document.createElement('div');
+            modal.className = 'settings-modal-overlay';
+            modal.innerHTML = `
+                <div class="settings-modal">
+                    <h4><i class="fas fa-lock"></i> Change Password</h4>
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="modal-btn-cancel" onclick="this.closest('.settings-modal-overlay').remove()">Cancel</button>
+                        <button class="modal-btn-confirm" onclick="changePassword()">Change Password</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('#currentPassword').focus();
+            
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('New password must be at least 8 characters');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.querySelector('.settings-modal-overlay').remove();
+                    alert('Password changed successfully!');
+                } else {
+                    alert(data.error || 'Failed to change password');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error changing password');
+            }
+        }
+        
+        // Change Email Modal
+        function showChangeEmailModal() {
+            const modal = document.createElement('div');
+            modal.className = 'settings-modal-overlay';
+            modal.innerHTML = `
+                <div class="settings-modal">
+                    <h4><i class="fas fa-envelope"></i> Change Email</h4>
+                    <div class="form-group">
+                        <label>New Email Address</label>
+                        <input type="email" id="newEmail" placeholder="Enter new email">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Password (for verification)</label>
+                        <input type="password" id="emailPassword" placeholder="Enter your password">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="modal-btn-cancel" onclick="this.closest('.settings-modal-overlay').remove()">Cancel</button>
+                        <button class="modal-btn-confirm" onclick="changeEmail()">Change Email</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('#newEmail').focus();
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        async function changeEmail() {
+            const newEmail = document.getElementById('newEmail').value.trim();
+            const password = document.getElementById('emailPassword').value;
+            
+            if (!newEmail || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(newEmail)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/change-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        new_email: newEmail,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.querySelector('.settings-modal-overlay').remove();
+                    alert('Email changed successfully!');
+                    location.reload();
+                } else {
+                    alert(data.error || 'Failed to change email');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error changing email');
+            }
+        }
+        
+        // Delete Account Modal
+        function showDeleteAccountModal() {
+            const modal = document.createElement('div');
+            modal.className = 'settings-modal-overlay';
+            modal.innerHTML = `
+                <div class="settings-modal">
+                    <h4 class="danger"><i class="fas fa-exclamation-triangle"></i> Delete Account</h4>
+                    <div class="warning-text">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Warning:</strong> This action is permanent and cannot be undone. All your data, including processing history, transcripts, and summaries will be permanently deleted.
+                    </div>
+                    <div class="form-group">
+                        <label>Type "DELETE" to confirm</label>
+                        <input type="text" id="deleteConfirmation" placeholder="Type DELETE">
+                    </div>
+                    <div class="form-group">
+                        <label>Enter your password</label>
+                        <input type="password" id="deletePassword" placeholder="Enter your password">
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="modal-btn-cancel" onclick="this.closest('.settings-modal-overlay').remove()">Cancel</button>
+                        <button class="modal-btn-danger" onclick="deleteAccount()">Delete My Account</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('#deleteConfirmation').focus();
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        async function deleteAccount() {
+            const confirmation = document.getElementById('deleteConfirmation').value;
+            const password = document.getElementById('deletePassword').value;
+            
+            if (confirmation !== 'DELETE') {
+                alert('Please type DELETE to confirm');
+                return;
+            }
+            
+            if (!password) {
+                alert('Please enter your password');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/delete-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('Your account has been deleted. You will be redirected to the home page.');
+                    window.location.href = '/';
+                } else {
+                    alert(data.error || 'Failed to delete account');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting account');
+            }
+        }
+    </script>
 </body>
 </html>

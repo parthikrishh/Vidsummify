@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Vidsummify</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <meta name="csrf-token" content="{{ csrf_token() }}">    <title>Sign Up - VidSummify</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,38 +17,94 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            color: #2d3748;
         }
 
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #3b82f6 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .nav-btn-secondary {
+            background: #f0f0f0;
+            color: #2d3748;
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav-btn-secondary:hover {
+            background: #e0e0e0;
+            color: #2d3748;
+        }
+
+        /* ===== SIGNUP CONTAINER ===== */
         .signup-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
+            max-width: 550px;
+            margin: 3rem auto;
+            padding: 0 1rem;
         }
 
         .signup-header {
             text-align: center;
-            margin-bottom: 30px;
+            color: white;
+            margin-bottom: 2rem;
         }
 
         .signup-header h1 {
-            color: #667eea;
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 0.5rem;
         }
 
         .signup-header p {
-            color: #666;
-            font-size: 14px;
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+
+        .signup-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
         .form-group {
@@ -53,136 +114,318 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
+            color: #1e293b;
+            font-weight: 600;
             font-size: 14px;
+            letter-spacing: 0.3px;
         }
 
-        .form-group input {
+        .password-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group input,
+        .password-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
+            padding: 11px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background: #f8fafc;
         }
 
-        .form-group input:focus {
+        .password-group input {
+            padding-right: 42px;
+        }
+
+        .form-group input:focus,
+        .password-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 16px;
+            padding: 6px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-toggle:hover {
+            color: #3b82f6;
         }
 
         .password-requirements {
             font-size: 12px;
-            color: #666;
+            color: #64748b;
             margin-top: 8px;
             line-height: 1.6;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .password-requirements ul {
+            margin-left: 0;
+            margin-top: 5px;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .password-requirements li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+            transition: color 0.3s ease;
+        }
+
+        .password-requirements li i {
+            font-size: 12px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .password-requirements li.valid {
+            color: #22c55e;
+        }
+
+        .password-requirements li.valid i {
+            color: #22c55e;
+        }
+
+        .password-requirements li.invalid {
+            color: #64748b;
+        }
+
+        .password-requirements li.invalid i {
+            color: #94a3b8;
         }
 
         .btn-signup {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
         .btn-signup:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-signup:active {
+            transform: translateY(0);
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            color: #666;
+            margin-top: 24px;
+            color: #64748b;
             font-size: 14px;
         }
 
         .login-link a {
-            color: #667eea;
+            color: #3b82f6;
             text-decoration: none;
             font-weight: 600;
+            transition: color 0.2s;
         }
 
         .login-link a:hover {
+            color: #2563eb;
             text-decoration: underline;
         }
 
         .alert {
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 5px;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            border-radius: 8px;
             font-size: 14px;
+            border-left: 4px solid;
         }
 
         .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left-color: #dc2626;
         }
 
         .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #dcfce7;
+            color: #166534;
+            border-left-color: #22c55e;
+        }
+
+        @media (max-width: 768px) {
+            .signup-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .signup-card {
+                padding: 30px 25px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="signup-container">
-        <div class="signup-header">
-            <h1>🎬 Vidsummify</h1>
-            <p>Create Your Account</p>
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required placeholder="Choose a username" minlength="3">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email">
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Create a strong password">
-                <div class="password-requirements">
-                    Password must contain:
-                    <ul style="margin-left: 20px; margin-top: 5px;">
-                        <li>At least 6 characters</li>
-                        <li>At least one letter</li>
-                        <li>At least one number</li>
-                    </ul>
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{{ url_for('auth.login') }}" class="navbar-brand">
+                    <i class="fas fa-video"></i> VidSummify
+                </a>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('auth.login') }}" class="nav-btn nav-btn-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                    <a href="{{ url_for('auth.signup') }}" class="nav-btn nav-btn-primary">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </a>
                 </div>
             </div>
+        </div>
+    </nav>
 
-            <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password">
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1><i class="fas fa-robot"></i> Video Summarization AI</h1>
+            <p>Create an account to start transforming videos into summaries</p>
+        </div>
+
+        <div class="signup-card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Choose a username" minlength="3">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-group">
+                        <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')" title="Show/Hide password">
+                            <i class="fas fa-eye" id="eye-icon-1"></i>
+                        </button>
+                    </div>
+                    <div class="password-requirements">
+                        <strong>Password requirements:</strong>
+                        <ul>
+                            <li id="req-length" class="invalid"><i class="fas fa-circle"></i> At least 6 characters</li>
+                            <li id="req-letter" class="invalid"><i class="fas fa-circle"></i> At least one letter</li>
+                            <li id="req-number" class="invalid"><i class="fas fa-circle"></i> At least one number</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <div class="password-group">
+                        <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')" title="Show/Hide password">
+                            <i class="fas fa-eye" id="eye-icon-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-signup">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Sign in here</a>
             </div>
-
-            <button type="submit" class="btn-signup">Create Account</button>
-        </form>
-
-        <div class="login-link">
-            Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
         </div>
     </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const eyeIcon = document.getElementById(fieldId === 'password' ? 'eye-icon-1' : 'eye-icon-2');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Real-time password validation
+        const passwordInput = document.getElementById('password');
+        const reqLength = document.getElementById('req-length');
+        const reqLetter = document.getElementById('req-letter');
+        const reqNumber = document.getElementById('req-number');
+
+        function updateRequirement(element, isValid) {
+            const icon = element.querySelector('i');
+            if (isValid) {
+                element.classList.remove('invalid');
+                element.classList.add('valid');
+                icon.classList.remove('fa-circle');
+                icon.classList.add('fa-check-circle');
+            } else {
+                element.classList.remove('valid');
+                element.classList.add('invalid');
+                icon.classList.remove('fa-check-circle');
+                icon.classList.add('fa-circle');
+            }
+        }
+
+        passwordInput.addEventListener('input', function() {
+            const value = this.value;
+            
+            // Check length (at least 6 characters)
+            updateRequirement(reqLength, value.length >= 6);
+            
+            // Check for at least one letter
+            updateRequirement(reqLetter, /[a-zA-Z]/.test(value));
+            
+            // Check for at least one number
+            updateRequirement(reqNumber, /[0-9]/.test(value));
+        });
+    </script>
 </body>
 </html>

@@ -3,46 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Processing History - Vidsummify</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
         }
 
+        /* Custom scrollbar for modal */
+        .modal-content-scrollable::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content-scrollable::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .modal-content-scrollable::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #3b82f6, #4facfe);
+            border-radius: 10px;
+        }
+
+        .modal-content-scrollable::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #2563eb, #3b82f6);
+        }
+
+        .modal-content-scrollable {
+            scrollbar-width: thin;
+            scrollbar-color: #3b82f6 #e2e8f0;
+        }
+
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px 0;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: white;
+            padding: 3rem 0 1rem;
         }
 
         .header h1 {
-            color: #667eea;
+            color: white;
             font-family: 'Poppins', sans-serif;
             font-weight: 800;
             margin-bottom: 10px;
+            font-size: 2.5rem;
         }
 
         .header p {
-            color: #666;
+            color: rgba(255, 255, 255, 0.8);
             margin-bottom: 0;
+            font-size: 1.1rem;
         }
 
-        .top-nav {
+        /* ===== NAVBAR ===== */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #3b82f6 !important;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 0.5rem;
         }
 
-        .btn-group-custom {
+        .nav-user {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-user span {
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn-secondary {
+            background: #f0f0f0;
+            color: #2d3748;
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav-btn-secondary:hover {
+            background: #e0e0e0;
+            color: #2d3748;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .nav-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+        .nav-btn-danger {
+            color: #e74c3c;
+        }
+
+        /* ===== PAGE CONTAINER ===== */
+        .page-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem 3rem;
         }
 
         .history-container {
@@ -51,101 +151,211 @@
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             margin-bottom: 40px;
+            overflow-x: auto;
+        }
+
+        .history-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
         }
 
         .history-table {
             margin-bottom: 0;
+            min-width: 850px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
         .history-table thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
         }
 
         .history-table thead th {
             border: none;
+            border-bottom: 2px solid #1e40af;
             padding: 15px;
             font-weight: 700;
             font-size: 0.95rem;
         }
 
+        .history-table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .history-table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
         .history-table tbody td {
             padding: 15px;
             border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #f0f0f0;
             vertical-align: middle;
+            white-space: nowrap;
+            background: white;
         }
 
-        .history-table tbody tr:hover {
+        .history-table tbody td:last-child {
+            border-right: none;
+        }
+
+        .history-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .history-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+
+        .history-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+
+        .history-table tbody tr:hover td {
             background-color: #f8f9fa;
             transition: all 0.3s ease;
         }
 
         .video-name {
-            color: #667eea;
+            color: #3b82f6;
             font-weight: 600;
             max-width: 200px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: inline-block;
+            padding: 4px 8px;
+            background: #f0f7ff;
+            border-radius: 6px;
+            border: 1px solid #d0e3ff;
         }
 
         .language-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
+            border: 2px solid #1e40af;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
         }
 
         .metrics-badge {
             display: inline-block;
-            background: #f0f0f0;
+            background: #f8f9fa;
             color: #333;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 15px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-right: 8px;
             margin-bottom: 5px;
+            border: 1px solid #e0e0e0;
+            font-weight: 600;
         }
 
         .date-text {
-            color: #999;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 0.85rem;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
         }
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .action-buttons a {
-            padding: 6px 12px;
+        .action-buttons a,
+        .action-buttons button {
+            padding: 6px 10px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-decoration: none;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
         }
 
         .btn-view {
-            background: #667eea;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
+            border-color: #3b82f6;
         }
 
         .btn-view:hover {
-            background: #5568d3;
+            background: #2563eb;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-download {
-            background: #4facfe;
+        .btn-results {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             color: white;
+            border: 2px solid #4facfe;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-download:hover {
+        .btn-results:hover {
             background: #3a94db;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            border: 2px solid #ff6b6b;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .action-buttons select {
+            background: #2ed573;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .action-buttons select:hover {
+            background: #1ec968;
+        }
+
+        .action-buttons select option {
+            background: white;
+            color: #333;
         }
 
         .empty-state {
@@ -171,19 +381,19 @@
         }
 
         .pagination .page-link {
-            color: #667eea;
+            color: #3b82f6;
             border-color: #e0e0e0;
         }
 
         .pagination .page-link:hover {
-            background-color: #667eea;
+            background-color: #3b82f6;
             color: white;
-            border-color: #667eea;
+            border-color: #3b82f6;
         }
 
         .pagination .page-item.active .page-link {
-            background-color: #667eea;
-            border-color: #667eea;
+            background-color: #3b82f6;
+            border-color: #3b82f6;
         }
 
         @media (max-width: 768px) {
@@ -201,42 +411,28 @@
                 font-size: 0.9rem;
             }
 
-            .top-nav {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
-            }
-
-            .btn-group-custom {
-                width: 100%;
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-
-            .btn-group-custom a {
-                padding: 0.5rem 1rem;
-                font-size: 0.85rem;
-            }
-
             .history-container {
-                padding: 20px;
+                padding: 15px;
             }
 
             .history-table {
                 font-size: 0.9rem;
+                min-width: 100%;
             }
 
             .history-table thead th {
-                padding: 12px;
-                font-size: 0.8rem;
+                padding: 10px;
+                font-size: 0.75rem;
             }
 
             .history-table tbody td {
-                padding: 12px;
+                padding: 10px;
+                white-space: normal;
             }
 
             .video-name {
-                max-width: 150px;
+                max-width: 120px;
+                display: block;
             }
 
             .language-badge {
@@ -251,8 +447,8 @@
             }
 
             .action-buttons {
-                gap: 6px;
-                flex-direction: column;
+                gap: 5px;
+                flex-wrap: wrap;
             }
 
             .action-buttons a {
@@ -292,23 +488,6 @@
 
             .header p {
                 font-size: 0.85rem;
-            }
-
-            .top-nav {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .btn-group-custom {
-                width: 100%;
-                gap: 6px;
-            }
-
-            .btn-group-custom a {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.75rem;
-                flex: 1;
-                text-align: center;
             }
 
             .history-container {
@@ -356,7 +535,7 @@
             .history-table tbody td::before {
                 content: attr(data-label);
                 font-weight: 700;
-                color: #667eea;
+                color: #3b82f6;
                 display: inline-block;
                 width: 120px;
                 margin-right: 10px;
@@ -385,7 +564,8 @@
             }
 
             .date-text {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                font-family: 'Courier New', monospace;
             }
 
             .action-buttons {
@@ -433,15 +613,30 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            .btn-action {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+
         /* Extra small devices */
         @media (max-width: 360px) {
             .header h1 {
                 font-size: 1.1rem;
-            }
-
-            .btn-group-custom a {
-                padding: 0.3rem 0.6rem;
-                font-size: 0.7rem;
             }
 
             .history-table tbody td {
@@ -459,81 +654,172 @@
                 font-size: 0.65rem;
             }
         }
+
+        /* ===== FAVORITES && TAGS ===== */
+        .btn-favorite {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            padding: 5px;
+        }
+
+        .btn-favorite:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-active {
+            color: #ffc107;
+        }
+
+        .favorite-inactive {
+            color: #ddd;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+
+        .tags-cell {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tags-cell:hover {
+            opacity: 0.7;
+        }
+
+        /* ===== FONT CUSTOMIZATION ===== */
+        body {
+            transition: font-size 0.3s ease, font-family 0.3s ease;
+        }
+
+        body.font-small {
+            font-size: 14px;
+        }
+
+        body.font-medium {
+            font-size: 16px;
+        }
+
+        body.font-large {
+            font-size: 18px;
+        }
+
+        body.font-xlarge {
+            font-size: 20px;
+        }
+
+        body.font-serif {
+            font-family: 'Georgia', serif;
+        }
+
+        body.font-monospace {
+            font-family: 'Courier New', monospace;
+        }
+        /* stylelint-enable */
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="container">
-            <div class="top-nav">
-                <div>
-                    <h1><i class="fas fa-history"></i> Processing History</h1>
-                    <p>View all your video processing records</p>
-                </div>
-                <div class="btn-group-custom">
-                    <a href="{{ url_for('home') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> New Upload
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+                <a href="{{ url_for('home') }}" class="navbar-brand">
+                    <i class="fas fa-video"></i> VidSummify
+                </a>
+                <div class="nav-user">
+                    <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+                    <a href="{{ url_for('home') }}" class="nav-btn nav-btn-primary">
+                        <i class="fas fa-upload"></i> Upload
                     </a>
-                    <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-primary">
+                    <a href="{{ url_for('settings') }}" class="nav-btn nav-btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
                         <i class="fas fa-user"></i> Profile
                     </a>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                    <a href="{{ url_for('history') }}" class="nav-btn nav-btn-secondary">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="nav-btn nav-btn-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <div class="container">
+    <!-- Page Container -->
+    <div class="page-container">
+        <div class="header">
+            <h1><i class="fas fa-history"></i> Processing History</h1>
+            <p>View all your video processing records</p>
+        </div>
+
         {% if history.items %}
             <div class="history-container">
-                <table class="table history-table">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-file-video"></i> Video Name</th>
-                            <th><i class="fas fa-globe"></i> Language</th>
-                            <th><i class="fas fa-timer"></i> Processing Time</th>
-                            <th><i class="fas fa-compress"></i> Compression</th>
-                            <th><i class="fas fa-calendar"></i> Date</th>
-                            <th><i class="fas fa-cog"></i> Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in history.items %}
+                <div class="history-table-wrapper">
+                    <table class="table history-table">
+                        <thead>
                             <tr>
-                                <td data-label="Video Name">
-                                    <span class="video-name" title="{{ item.video_filename }}">
-                                        {{ item.video_filename }}
-                                    </span>
-                                </td>
-                                <td data-label="Language">
-                                    <span class="language-badge">{{ item.language }}</span>
-                                </td>
-                                <td data-label="Processing Time">
-                                    <span class="metrics-badge">{{ item.processing_time|round(2) }}s</span>
-                                </td>
-                                <td data-label="Compression">
-                                    <span class="metrics-badge">{{ (item.compression_ratio * 100)|round(1) }}%</span>
-                                </td>
-                                <td data-label="Date">
-                                    <span class="date-text">
-                                        {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
-                                    </span>
-                                </td>
-                                <td data-label="Actions">
-                                    <div class="action-buttons">
-                                        <a href="{{ item.summary_path }}" class="btn-view" title="View Summary" target="_blank">
-                                            <i class="fas fa-eye"></i> Summary
-                                        </a>
-                                        <a href="{{ item.transcript_path }}" class="btn-download" title="Download Transcript" target="_blank">
-                                            <i class="fas fa-download"></i> Transcript
-                                        </a>
-                                    </div>
-                                </td>
+                                <th><i class="fas fa-star"></i> Fav</th>
+                                <th><i class="fas fa-file-video"></i> Video</th>
+                                <th><i class="fas fa-clock"></i> Duration</th>
+                                <th><i class="fas fa-compress"></i> Ratio</th>
+                                <th><i class="fas fa-calendar-alt"></i> Date & Time</th>
+                                <th><i class="fas fa-cog"></i> Actions</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for item in history.items %}
+                                <tr>
+                                    <td data-label="Favorite">
+                                        <button class="btn-favorite" data-id="{{ item.id }}" data-action="favorite" title="Toggle favorite">
+                                            <i class="fas fa-star {% if item.is_favorite %}favorite-active{% else %}favorite-inactive{% endif %}"></i>
+                                        </button>
+                                    </td>
+                                    <td data-label="Video Name">
+                                        <span class="video-name" title="{{ item.video_filename }}">
+                                            {{ item.video_filename[:30] }}{{ "..." if item.video_filename|length > 30 else "" }}
+                                        </span>
+                                    </td>
+                                    <td data-label="Duration">
+                                        <span class="metrics-badge">{{ (item.processing_time / 60)|round(1) }} min</span>
+                                    </td>
+                                    <td data-label="Compression">
+                                        <span class="metrics-badge">{{ (item.compression_ratio * 100)|round(0) }}%</span>
+                                    </td>
+                                    <td data-label="Date & Time">
+                                        <span class="date-text">
+                                            {{ item.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                                        </span>
+                                    </td>
+                                    <td data-label="Actions">
+                                        <div class="action-buttons">
+                                            <button class="btn-view" data-id="{{ item.id }}" data-action="view" title="View Summary">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <a href="{{ url_for('result', history_id=item.id) }}" class="btn-results" title="View Full Results">
+                                                <i class="fas fa-expand"></i>
+                                            </a>
+                                            <button class="btn-delete" data-id="{{ item.id }}" data-filename="{{ item.video_filename }}" data-action="delete" title="Delete this record">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- Pagination -->
                 {% if history.pages > 1 %}
@@ -583,5 +869,365 @@
             </div>
         {% endif %}
     </div>
+
+<script>
+    // CSRF Token Setup
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    // ===== FONT CUSTOMIZATION =====
+    function applyFontSettings() {
+        const fontSize = localStorage.getItem('fontSize') || 'medium';
+        const fontFamily = localStorage.getItem('fontFamily') || 'sans-serif';
+        
+        document.body.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge');
+        document.body.classList.remove('font-serif', 'font-monospace');
+        
+        document.body.classList.add(`font-${fontSize}`);
+        if (fontFamily !== 'sans-serif') {
+            document.body.classList.add(`font-${fontFamily}`);
+        }
+    }
+
+    // ===== FAVORITES =====
+    async function toggleFavorite(historyId, button) {
+        try {
+            const response = await fetch(`/api/favorite/${historyId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to toggle favorite');
+            
+            const data = await response.json();
+            
+            // Update star icon color - find the icon within the button
+            const icon = button.querySelector('i.fas');
+            if (icon) {
+                icon.style.color = data.is_favorite ? '#ffc107' : '#ddd';
+            }
+            
+            // Show notification
+            showNotification(data.message, 'success');
+        } catch (error) {
+            console.error('Favorite error:', error);
+            showNotification('Error toggling favorite', 'error');
+        }
+    }
+
+    // ===== VIEW SUMMARY =====
+    async function viewSummary(historyId) {
+        // Language names for display
+        const langNames = {
+            'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+            'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian',
+            'hi': 'Hindi', 'ta': 'Tamil', 'ja': 'Japanese', 'zh': 'Chinese',
+            'ko': 'Korean', 'ar': 'Arabic'
+        };
+        
+        // Create modal with language selection
+        const modal = document.createElement('div');
+        modal.className = 'history-modal-overlay';
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85); z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        `;
+        
+        modal.innerHTML = `
+            <div class="modal-content-scrollable" style="
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                border-radius: 20px;
+                padding: 0;
+                max-width: 900px;
+                width: 100%;
+                max-height: 85vh;
+                overflow: hidden;
+                box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(59, 130, 246, 0.2);
+                animation: modalSlideIn 0.3s ease;
+            ">
+                <!-- Modal Header -->
+                <div style="
+                    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+                    padding: 25px 30px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid rgba(255,255,255,0.1);
+                ">
+                    <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                        <div style="
+                            width: 50px; height: 50px;
+                            background: rgba(255,255,255,0.2);
+                            border-radius: 12px;
+                            display: flex; align-items: center; justify-content: center;
+                        ">
+                            <i class="fas fa-file-alt" style="font-size: 1.5rem; color: white;"></i>
+                        </div>
+                        <div>
+                            <h3 style="margin: 0; color: white; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem;">View Summary</h3>
+                            <span style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">Select language to view</span>
+                        </div>
+                    </div>
+                    <button onclick="this.closest('.history-modal-overlay').remove()" style="
+                        width: 40px; height: 40px;
+                        background: rgba(255,255,255,0.15);
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">×</button>
+                </div>
+                
+                <!-- Language Selection -->
+                <div style="padding: 30px;" id="languageSelectionSection">
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px; text-align: center; font-size: 1rem;">
+                        <i class="fas fa-language" style="color: #4facfe; margin-right: 8px;"></i>
+                        Choose your preferred language:
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px;">
+                        <button class="lang-option-btn" data-lang="en" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇬🇧 English</button>
+                        <button class="lang-option-btn" data-lang="es" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇪🇸 Spanish</button>
+                        <button class="lang-option-btn" data-lang="fr" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇫🇷 French</button>
+                        <button class="lang-option-btn" data-lang="de" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇩🇪 German</button>
+                        <button class="lang-option-btn" data-lang="it" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇮🇹 Italian</button>
+                        <button class="lang-option-btn" data-lang="pt" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇵🇹 Portuguese</button>
+                        <button class="lang-option-btn" data-lang="ru" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇷🇺 Russian</button>
+                        <button class="lang-option-btn" data-lang="ja" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇯🇵 Japanese</button>
+                        <button class="lang-option-btn" data-lang="zh" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇨🇳 Chinese</button>
+                        <button class="lang-option-btn" data-lang="hi" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇮🇳 Hindi</button>
+                        <button class="lang-option-btn" data-lang="ar" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇸🇦 Arabic</button>
+                        <button class="lang-option-btn" data-lang="ko" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇰🇷 Korean</button>
+                        <button class="lang-option-btn" data-lang="ta" style="padding: 12px; background: rgba(255,255,255,0.1); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 10px; color: white; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem;">🇮🇳 Tamil</button>
+                    </div>
+                </div>
+                
+                <!-- Loading Indicator -->
+                <div id="loadingSection" style="display: none; padding: 50px; text-align: center;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: #4facfe; margin-bottom: 15px;"></i>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 1rem;">Loading summary...</p>
+                </div>
+                
+                <!-- Summary Content -->
+                <div id="summarySection" style="display: none; padding: 30px; max-height: calc(85vh - 100px); overflow-y: auto;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span id="selectedLangBadge" style="
+                                background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+                                color: white;
+                                padding: 6px 16px;
+                                border-radius: 20px;
+                                font-size: 0.85rem;
+                                font-weight: 600;
+                            "></span>
+                        </div>
+                        <button id="changeLangBtn" style="
+                            background: rgba(255,255,255,0.1);
+                            border: 1px solid rgba(255,255,255,0.2);
+                            color: white;
+                            padding: 8px 16px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 0.85rem;
+                            transition: all 0.3s ease;
+                        ">
+                            <i class="fas fa-exchange-alt"></i> Change Language
+                        </button>
+                    </div>
+                    <div style="
+                        background: rgba(255,255,255,0.05);
+                        border-radius: 15px;
+                        padding: 25px;
+                        border: 1px solid rgba(255,255,255,0.1);
+                    ">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                            <i class="fas fa-align-left" style="color: #4facfe; font-size: 1.2rem;"></i>
+                            <h4 style="margin: 0; color: white; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem;">Summary</h4>
+                        </div>
+                        <div id="summaryContent" style="
+                            color: rgba(255,255,255,0.9);
+                            line-height: 1.9;
+                            white-space: pre-wrap;
+                            text-align: justify;
+                            font-size: 1rem;
+                            font-family: 'Inter', sans-serif;
+                        "></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add animation keyframes
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes modalSlideIn {
+                from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+                to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+            .lang-option-btn:hover {
+                background: rgba(59, 130, 246, 0.3) !important;
+                border-color: #3b82f6 !important;
+                transform: translateY(-2px);
+            }
+        `;
+        modal.appendChild(styleSheet);
+        
+        // Handle language selection
+        modal.querySelectorAll('.lang-option-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const lang = btn.getAttribute('data-lang');
+                const langSelectionSection = modal.querySelector('#languageSelectionSection');
+                const loadingSection = modal.querySelector('#loadingSection');
+                const summarySection = modal.querySelector('#summarySection');
+                
+                // Show loading
+                langSelectionSection.style.display = 'none';
+                loadingSection.style.display = 'block';
+                
+                try {
+                    const response = await fetch(`/api/view-summary/${historyId}?lang=${lang}`, {
+                        method: 'GET'
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to load summary');
+                    
+                    const data = await response.json();
+                    
+                    // Update UI with summary
+                    loadingSection.style.display = 'none';
+                    summarySection.style.display = 'block';
+                    modal.querySelector('#selectedLangBadge').innerHTML = `<i class="fas fa-language"></i> ${langNames[lang]}`;
+                    modal.querySelector('#summaryContent').textContent = data.summary;
+                    
+                    // Update modal title with filename
+                    modal.querySelector('h3').textContent = data.filename;
+                    modal.querySelector('h3').nextElementSibling.textContent = 'Video Summary';
+                    
+                } catch (error) {
+                    loadingSection.style.display = 'none';
+                    langSelectionSection.style.display = 'block';
+                    alert('Error loading summary: ' + error.message);
+                }
+            });
+        });
+        
+        // Handle "Change Language" button
+        modal.querySelector('#changeLangBtn').addEventListener('click', () => {
+            modal.querySelector('#summarySection').style.display = 'none';
+            modal.querySelector('#languageSelectionSection').style.display = 'block';
+        });
+        
+        // Close modal when clicking on backdrop
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+        
+        // Close on Escape key
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                modal.remove();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+        document.body.appendChild(modal);
+    }
+
+    // ===== DELETE HISTORY =====
+    async function deleteHistory(historyId, filename) {
+        if (!confirm(`Are you sure you want to delete "${filename}"? This cannot be undone.`)) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/api/delete-history/${historyId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to delete history');
+            
+            showNotification('Record deleted successfully', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } catch (error) {
+            console.error('Delete error:', error);
+            showNotification('Error deleting record', 'error');
+        }
+    }
+
+    // ===== NOTIFICATIONS =====
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#2ed573' : type === 'error' ? '#e74c3c' : '#3b82f6'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+        applyFontSettings();
+    });
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Event listeners for action buttons
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        
+        const action = btn.getAttribute('data-action');
+        const historyId = btn.getAttribute('data-id');
+        const filename = btn.getAttribute('data-filename');
+        
+        if (action === 'favorite') {
+            toggleFavorite(historyId, btn);
+        } else if (action === 'view') {
+            viewSummary(historyId);
+        } else if (action === 'delete') {
+            deleteHistory(historyId, filename);
+        }
+    });
+</script>
+
 </body>
 </html>

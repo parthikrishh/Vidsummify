@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Settings - VidSummify</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #2d3748;
+      min-height: 100vh;
+    }
+
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .navbar-brand {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #3b82f6 !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-btn-secondary {
+      background: #f0f0f0;
+      color: #2d3748;
+      border: 1px solid #e0e0e0;
+    }
+
+    .nav-btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+    }
+
+    .nav-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+      color: white;
+    }
+
+    .nav-btn-danger {
+      color: #e74c3c;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-user span {
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .settings-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .settings-header {
+      text-align: center;
+      color: white;
+      margin-bottom: 3rem;
+    }
+
+    .settings-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 0.5rem;
+    }
+
+    .settings-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .settings-card h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #1a202c;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .settings-card h3 i {
+      color: #3b82f6;
+    }
+
+    .setting-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .setting-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .setting-label {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .setting-description {
+      font-size: 0.9rem;
+      color: #718096;
+      margin-bottom: 1rem;
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #3b82f6;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+      color: white;
+    }
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      gap: 1rem;
+      color: #ffd700;
+    }
+
+    @media (max-width: 768px) {
+      .settings-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .settings-card {
+        padding: 20px;
+      }
+
+      .settings-card h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .settings-container {
+        padding: 1rem;
+      }
+
+      .settings-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .settings-card {
+        padding: 15px;
+        margin: 1rem 0;
+      }
+
+      .settings-card h3 {
+        font-size: 1rem;
+      }
+
+      .form-select,
+      .form-control {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar-custom">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+        <a href="{{ url_for('home') }}" class="navbar-brand">
+          <i class="fas fa-video"></i> VidSummify
+        </a>
+        <div class="nav-user">
+          <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+          <a href="{{ url_for('home') }}" class="nav-btn nav-btn-primary">
+            <i class="fas fa-upload"></i> Upload
+          </a>
+          <a href="{{ url_for('settings') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="{{ url_for('history') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-history"></i> History
+          </a>
+          <a href="{{ url_for('auth.logout') }}" class="nav-btn nav-btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Settings Container -->
+  <div class="settings-container">
+    <div class="settings-header">
+      <h1>Advanced Settings</h1>
+      <p>Customize your VidSummify experience</p>
+    </div>
+
+    <!-- Text & Display Settings -->
+    <div class="settings-card">
+      <h3><i class="fas fa-font"></i> Text & Display</h3>
+      
+      <div class="setting-item">
+        <label class="setting-label">Font Size</label>
+        <p class="setting-description">Adjust the text size for better readability</p>
+        <select class="form-select" id="fontSizeSetting">
+          <option value="small">Small</option>
+          <option value="medium" selected>Medium (Default)</option>
+          <option value="large">Large</option>
+          <option value="xlarge">Extra Large</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">Font Family</label>
+        <p class="setting-description">Choose your preferred font style</p>
+        <select class="form-select" id="fontFamilySetting">
+          <option value="sans-serif" selected>Modern (Sans-serif)</option>
+          <option value="serif">Classic (Serif)</option>
+          <option value="monospace">Code (Monospace)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Transcription Settings -->
+    <div class="settings-card">
+      <h3><i class="fas fa-microphone"></i> Transcription Settings</h3>
+      
+      <div class="setting-item">
+        <label class="setting-label">Transcription Speed</label>
+        <p class="setting-description">Speed up or slow down transcription processing</p>
+        <select class="form-select" id="transcriptionSpeedSetting">
+          <option value="fast">⚡ Fast (Lower accuracy)</option>
+          <option value="balanced" selected>⚙️ Balanced (Default)</option>
+          <option value="accurate">📊 Accurate (Slower)</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">Auto-detect Language</label>
+        <p class="setting-description">Automatically detect the language of your video</p>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoDetectLanguage" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Summary Settings -->
+    <div class="settings-card">
+      <h3><i class="fas fa-compress"></i> Summary Settings</h3>
+      
+      <div class="setting-item">
+        <label class="setting-label">Default Summary Length</label>
+        <p class="setting-description">Choose how detailed your summaries should be</p>
+        <select class="form-select" id="summaryLengthSetting">
+          <option value="short">📄 Short (Brief)</option>
+          <option value="medium" selected>📝 Medium (Default)</option>
+          <option value="long">📚 Long (Comprehensive)</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <label class="setting-label">Generate Summary Audio</label>
+        <p class="setting-description">Automatically create audio from summaries</p>
+        <label class="toggle-switch">
+          <input type="checkbox" id="generateAudio" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
+      <button class="btn-save" onclick="saveSettings()">
+        <i class="fas fa-save me-2"></i> Save Settings
+      </button>
+      <p style="margin-top: 1rem; color: #718096;">Your settings are saved locally and synced with your account</p>
+    </div>
+  </div>
+
+  <script>
+    // ===== LOAD SETTINGS =====
+    function loadSettings() {
+      document.getElementById('fontSizeSetting').value = localStorage.getItem('fontSize') || 'medium';
+      document.getElementById('fontFamilySetting').value = localStorage.getItem('fontFamily') || 'sans-serif';
+      document.getElementById('transcriptionSpeedSetting').value = localStorage.getItem('transcriptionSpeed') || 'balanced';
+      document.getElementById('summaryLengthSetting').value = localStorage.getItem('summaryLength') || 'medium';
+
+      document.getElementById('autoDetectLanguage').checked = JSON.parse(localStorage.getItem('autoDetectLanguage') !== 'false');
+      document.getElementById('generateAudio').checked = JSON.parse(localStorage.getItem('generateAudio') !== 'false');
+    }
+
+    // ===== SAVE SETTINGS =====
+    function saveSettings() {
+      localStorage.setItem('fontSize', document.getElementById('fontSizeSetting').value);
+      localStorage.setItem('fontFamily', document.getElementById('fontFamilySetting').value);
+      localStorage.setItem('transcriptionSpeed', document.getElementById('transcriptionSpeedSetting').value);
+      localStorage.setItem('summaryLength', document.getElementById('summaryLengthSetting').value);
+
+      localStorage.setItem('autoDetectLanguage', document.getElementById('autoDetectLanguage').checked);
+      localStorage.setItem('generateAudio', document.getElementById('generateAudio').checked);
+
+      // Show success message
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check me-2"></i> Settings Saved!';
+      btn.style.background = 'linear-gradient(135deg, #2ed573 0%, #00f2fe 100%)';
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+      }, 2000);
+    }
+
+    // Load settings on page load
+    loadSettings();
+  </script>
+
+</body>
+</html>

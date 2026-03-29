@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>VidSummify - AI Video Summarizer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +25,7 @@
     }
 
     body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: #2d3748;
       min-height: 100vh;
@@ -40,14 +42,14 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
     }
 
     .navbar-brand {
       font-family: 'Poppins', sans-serif;
       font-weight: 800;
       font-size: 1.5rem;
-      color: #667eea !important;
+      color: #3b82f6 !important;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -87,13 +89,13 @@
     }
 
     .nav-btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
       color: white;
     }
 
     .nav-btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
       color: white;
     }
 
@@ -194,7 +196,7 @@
     }
 
     .form-label i {
-      color: #667eea;
+      color: #3b82f6;
       margin-right: 0.5rem;
     }
 
@@ -215,8 +217,8 @@
 
     .form-control:focus, .form-select:focus {
       background: white;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       outline: none;
     }
 
@@ -230,9 +232,9 @@
     /* ===== FILE INPUT ===== */
     .file-input-zone {
       position: relative;
-      border: 2px dashed #667eea;
+      border: 2px dashed #3b82f6;
       border-radius: 12px;
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);
       padding: 2rem 1.5rem;
       text-align: center;
       cursor: pointer;
@@ -240,8 +242,8 @@
     }
 
     .file-input-zone:hover {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-      border-color: #764ba2;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+      border-color: #1e40af;
       transform: translateY(-2px);
     }
 
@@ -251,7 +253,7 @@
 
     .file-input-icon {
       font-size: 3rem;
-      color: #667eea;
+      color: #3b82f6;
       margin-bottom: 1rem;
     }
 
@@ -259,6 +261,10 @@
       font-weight: 600;
       color: #2d3748;
       margin-bottom: 0.3rem;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      padding: 0 0.5rem;
     }
 
     .file-input-hint {
@@ -268,7 +274,7 @@
 
     /* ===== BUTTONS ===== */
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
       color: white;
       border: none;
       padding: 1rem 2rem;
@@ -285,7 +291,7 @@
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
       color: white;
     }
 
@@ -327,7 +333,7 @@
 
     .spinner {
       font-size: 3rem;
-      color: #667eea;
+      color: #3b82f6;
       margin-bottom: 1.5rem;
       animation: spin 2s linear infinite;
     }
@@ -359,7 +365,7 @@
     }
 
     .progress-bar {
-      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
       border-radius: 10px;
       transition: width 0.3s ease;
     }
@@ -611,9 +617,52 @@
       }
     }
 
+    @media (max-width: 480px) {
+      .navbar-brand {
+        font-size: 0.95rem;
+      }
+
+      .nav-user {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+      }
+
+      .hero h1 {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .hero p {
+        font-size: 0.9rem;
+      }
+
+      .form-card {
+        padding: 1.2rem;
+        margin: 1rem;
+      }
+
+      .file-input-icon {
+        font-size: 2.2rem;
+      }
+
+      .file-input-text {
+        font-size: 0.95rem;
+      }
+
+      .btn-primary {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+
     @media (max-width: 360px) {
       .navbar-brand {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
       }
 
       .nav-btn {
@@ -622,15 +671,29 @@
       }
 
       .hero h1 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+      }
+
+      .hero p {
+        font-size: 0.8rem;
       }
 
       .form-card {
-        padding: 1rem;
+        padding: 0.8rem;
+        margin: 0.8rem;
       }
 
       .file-input-icon {
         font-size: 1.8rem;
+      }
+
+      .file-input-text {
+        font-size: 0.85rem;
+      }
+
+      .btn-primary {
+        padding: 0.7rem 1rem;
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -645,6 +708,9 @@
         </a>
         <div class="nav-user">
           <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+          <a href="{{ url_for('settings') }}" class="nav-btn nav-btn-secondary">
+            <i class="fas fa-cog"></i> Settings
+          </a>
           <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
             <i class="fas fa-user"></i> Profile
           </a>
@@ -679,36 +745,8 @@
       <!-- FORM CARD -->
       <div class="form-card">
         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-          <!-- Language Selection -->
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-globe"></i> Transcription Language
-            </label>
-            <select name="language" id="languageSelect" class="form-select" required>
-              <option value="">Auto-Detect Language</option>
-              {% for code, name in languages.items() %}
-                <option value="{{ code }}" {% if code == 'en' %}selected{% endif %}>{{ name }}</option>
-              {% endfor %}
-            </select>
-            <span class="help-text">
-              <i class="fas fa-info-circle me-1"></i> Select a language or use auto-detection
-            </span>
-          </div>
-
-          <!-- Output Language Selection -->
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-language"></i> Preferred Output Language
-            </label>
-            <select name="output_language" id="outputLanguageSelect" class="form-select" required>
-              {% for code, name in languages.items() %}
-                <option value="{{ code }}" {% if code == 'en' %}selected{% endif %}>{{ name }}</option>
-              {% endfor %}
-            </select>
-            <span class="help-text">
-              <i class="fas fa-info-circle me-1"></i> Choose the language for your summary output
-            </span>
-          </div>
+          <!-- Language Selection - Hidden, Auto-Detect Only -->
+          <input type="hidden" name="language" value="en">
 
           <!-- File Upload -->
           <div class="form-group">
@@ -719,8 +757,8 @@
               <div class="file-input-icon">
                 <i class="fas fa-cloud-upload-alt"></i>
               </div>
-              <div class="file-input-text">Click to upload or drag and drop</div>
-              <div class="file-input-hint">MP4 format, Max 500MB</div>
+              <div class="file-input-text" id="fileInputText">Click to upload or drag and drop</div>
+              <div class="file-input-hint" id="fileInputHint">MP4 format, Max 500MB</div>
               <input type="file" name="video" id="videoFile" accept=".mp4" required>
             </div>
           </div>
@@ -755,6 +793,18 @@
   </div>
 
   <script>
+    // CSRF Token Setup
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    // Helper function for fetch with CSRF
+    async function fetchWithCSRF(url, options = {}) {
+      options.headers = options.headers || {};
+      if (csrfToken) {
+        options.headers['X-CSRFToken'] = csrfToken;
+      }
+      return fetch(url, options);
+    }
+    
     // Handle form submission
     document.getElementById("uploadForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -803,7 +853,7 @@
         clearInterval(interval);
 
         try {
-          await fetch("/cancel", { method: "POST" });
+          await fetchWithCSRF("/cancel", { method: "POST" });
         } catch (error) {
           console.error("Error canceling:", error);
         }
@@ -866,6 +916,9 @@
       });
 
       xhr.open("POST", "/upload", true);
+      if (csrfToken) {
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+      }
       xhr.send(formData);
     });
 
@@ -884,15 +937,15 @@
 
     ["dragenter", "dragover"].forEach(eventName => {
       fileZone.addEventListener(eventName, () => {
-        fileZone.style.borderColor = "#764ba2";
-        fileZone.style.background = "linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)";
+        fileZone.style.borderColor = "#1e40af";
+        fileZone.style.background = "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%)";
       });
     });
 
     ["dragleave", "drop"].forEach(eventName => {
       fileZone.addEventListener(eventName, () => {
-        fileZone.style.borderColor = "#667eea";
-        fileZone.style.background = "linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)";
+        fileZone.style.borderColor = "#3b82f6";
+        fileZone.style.background = "linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%)";
       });
     });
 
@@ -900,7 +953,35 @@
       const dt = e.dataTransfer;
       const files = dt.files;
       fileInput.files = files;
+      updateFileDisplay(files);
     });
+
+    // Handle file selection from input or drag-drop
+    fileInput.addEventListener("change", (e) => {
+      updateFileDisplay(e.target.files);
+    });
+
+    function updateFileDisplay(files) {
+      const fileInputText = document.getElementById("fileInputText");
+      const fileInputHint = document.getElementById("fileInputHint");
+      
+      if (files && files.length > 0) {
+        const file = files[0];
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        // Truncate long filenames for display
+        let displayName = file.name;
+        if (displayName.length > 30) {
+          displayName = displayName.substring(0, 27) + '...';
+        }
+        fileInputText.innerHTML = `<i class="fas fa-check-circle" style="color: #2ed573; margin-right: 0.5rem;"></i><span title="${file.name}" style="word-break: break-word; overflow-wrap: break-word;">${displayName}</span>`;
+        fileInputHint.textContent = `Size: ${sizeMB} MB | Ready to upload`;
+        fileInputHint.style.color = "#2ed573";
+      } else {
+        fileInputText.textContent = "Click to upload or drag and drop";
+        fileInputHint.textContent = "MP4 format, Max 500MB";
+        fileInputHint.style.color = "";
+      }
+    }
   </script>
 </body>
 </html>

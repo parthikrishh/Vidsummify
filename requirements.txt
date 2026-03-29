@@ -1,16 +1,41 @@
-flask
-flask-sqlalchemy
-flask-login
-flask-migrate
-werkzeug
+# Flask and extensions
+flask>=3.0.0
+flask-sqlalchemy>=3.1.0
+flask-login>=0.6.0
+flask-migrate>=4.0.0
+flask-wtf>=1.2.0
+flask-limiter>=3.5.0
+werkzeug>=3.0.0
+
+# Video/Audio processing
 moviepy==1.0.3
-torch
-transformers
-sentencepiece
-pydub
-gTTS
-nltk
-faster-whisper
-langdetect
-textblob
-python-dotenv
+pydub>=0.25.0
+ffmpeg-python>=0.2.0
+audioop-lts>=0.2.1  # Python 3.13+ compatibility for pydub
+
+# AI/ML Models
+torch>=2.0.0
+transformers>=4.30.0
+sentencepiece>=0.1.99
+faster-whisper>=1.0.0
+
+# Text processing
+nltk>=3.8.0
+langdetect>=1.0.9
+textblob>=0.17.0
+
+# Translation & TTS
+googletrans==4.0.2
+gTTS>=2.5.0
+
+# Export formats
+reportlab>=4.0.0
+python-docx>=1.0.0
+Pillow>=10.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# Arabic text support (optional)
+arabic-reshaper>=3.0.0
+python-bidi>=0.4.0

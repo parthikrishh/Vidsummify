@@ -3,30 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Results - {{ video_name }}</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233b82f6'/%3E%3Cpath d='M25 30h35v40H25z' fill='white'/%3E%3Cpath d='M65 35l15 15-15 15z' fill='white'/%3E%3C/svg%3E">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
-    /* Center and style the video */
-    .video-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 40px;
+    /* CSS Reset - consistent with other pages */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .video-rectangle {
-      width: 85%;
-      max-width: 800px;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      border-radius: 20px;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-      border: 3px solid rgba(102, 126, 234, 0.2);
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      min-height: 100vh;
+      font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #2d3748;
     }
 
     /* Larger and centered audio bar */
@@ -45,18 +42,34 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .result-title {
-      color: #1a202c;
-      font-size: 2.8rem;
-      font-weight: 900;
-      font-family: 'Poppins', sans-serif;
+    .result-header {
+      text-align: center;
+      color: white;
       margin-bottom: 2rem;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 2rem 1rem;
     }
 
-    .result-title i {
-      color: #667eea;
+    .result-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-header h1 i {
+      color: #4facfe;
       margin-right: 15px;
+    }
+
+    .result-header p {
+      opacity: 0.8;
+      font-size: 1rem;
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem 3rem;
     }
 
     .content-card {
@@ -64,6 +77,8 @@
       padding: 30px;
       margin-bottom: 25px;
       background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
 
     .content-card h3 {
@@ -75,7 +90,7 @@
     }
 
     .content-card h3 i {
-      color: #667eea;
+      color: #3b82f6;
       margin-right: 10px;
     }
 
@@ -88,7 +103,7 @@
     }
 
     .transcript-card {
-      border-left: 5px solid #667eea;
+      border-left: 5px solid #3b82f6;
     }
 
     .summary-card {
@@ -99,10 +114,51 @@
       color: #4facfe;
     }
 
+    .transcript-card p,
+    .summary-card p {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      line-height: 1.8;
+      word-spacing: 0.1em;
+    }
+
+    /* Custom scrollbar for transcript and summary */
+    .transcript-card p::-webkit-scrollbar,
+    .summary-card p::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .transcript-card p::-webkit-scrollbar-track,
+    .summary-card p::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 10px;
+    }
+
+    .transcript-card p::-webkit-scrollbar-thumb,
+    .summary-card p::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #3b82f6, #4facfe);
+      border-radius: 10px;
+    }
+
+    .transcript-card p::-webkit-scrollbar-thumb:hover,
+    .summary-card p::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #2563eb, #3b82f6);
+    }
+
+    /* Firefox scrollbar */
+    .transcript-card p,
+    .summary-card p {
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 #e2e8f0;
+    }
+
     .audio-card {
-      background: linear-gradient(135deg, rgba(46, 213, 115, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+      background: #ffffff;
       padding: 35px;
       border-left: 5px solid #2ed573;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     }
 
     .audio-card h4 {
@@ -123,21 +179,17 @@
     }
 
     @media (max-width: 768px) {
-      .video-rectangle {
-        width: 95%;
-      }
-
       audio {
         width: 95%;
         height: 50px;
       }
 
-      .result-title {
+      .result-header h1 {
         font-size: 1.8rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
       }
 
-      .result-title i {
+      .result-header h1 i {
         margin-right: 10px;
         font-size: 1.5rem;
       }
@@ -178,12 +230,6 @@
     }
 
     @media (max-width: 576px) {
-      .video-rectangle {
-        width: 100%;
-        max-width: 100%;
-        border-radius: 15px;
-      }
-
       audio {
         width: 100%;
         max-width: 100%;
@@ -191,12 +237,12 @@
         border-radius: 12px;
       }
 
-      .result-title {
+      .result-header h1 {
         font-size: 1.4rem;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.5rem;
       }
 
-      .result-title i {
+      .result-header h1 i {
         margin-right: 8px;
         font-size: 1.2rem;
       }
@@ -299,51 +345,304 @@
         font-size: 1.3rem;
         margin-bottom: 0 !important;
       }
+
+      .transcript-card,
+      .summary-card {
+        padding: 15px;
+        margin: 1rem 0;
+      }
+
+      .transcript-card p,
+      .summary-card p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      .translate-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .card {
+        margin: 0.8rem 0;
+        padding: 1rem;
+      }
+
+      h1, h2, h3 {
+        font-size: 1.2rem;
+      }
+
+      .metrics-row .card {
+        padding: 12px !important;
+      }
+
+      .translate-btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+      }
+    }
+
+    /* Translation controls */
+    .translation-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .translation-controls select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 2px solid #3b82f6;
+      background: white;
+      color: #333;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .translation-controls select:hover {
+      border-color: #1e40af;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .translate-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .translate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .translate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .translate-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .content-card.translated {
+      background: #ffffff !important;
+      border-left-color: #2ed573 !important;
+    }
+
+    .content-card.translated h3 {
+      color: #1a202c !important;
+    }
+
+    .content-card.translated p {
+      color: #2d3748 !important;
+    }
+
+    /* ===== FONT CUSTOMIZATION ===== */
+    body.font-small {
+      font-size: 14px;
+    }
+
+    body.font-medium {
+      font-size: 16px;
+    }
+
+    body.font-large {
+      font-size: 18px;
+    }
+
+    body.font-xlarge {
+      font-size: 20px;
+    }
+
+    body.font-serif * {
+      font-family: Georgia, serif !important;
+    }
+
+    body.font-monospace * {
+      font-family: 'Courier New', monospace !important;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .navbar-brand {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #3b82f6 !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-user span {
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-btn-secondary {
+      background: #f0f0f0;
+      color: #2d3748;
+      border: 1px solid #e0e0e0;
+    }
+
+    .nav-btn-secondary:hover {
+      background: #e0e0e0;
+      color: #2d3748;
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: white;
+    }
+
+    .nav-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+      color: white;
+    }
+
+    .nav-btn-danger {
+      color: #e74c3c;
     }
   </style>
 </head>
-<body class="bg-gradient">
+<body>
 
-<div class="container py-5" style="padding-left: 15px; padding-right: 15px;">
-  <h1 class="result-title text-center">
-    <i class="fas fa-file-alt"></i> Results for: {{ video_name }}
-  </h1>
+<!-- NAVBAR -->
+<nav class="navbar-custom">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+      <a href="{{ url_for('home') }}" class="navbar-brand">
+        <i class="fas fa-video"></i> VidSummify
+      </a>
+      <div class="nav-user">
+        <span><i class="fas fa-user-circle me-1"></i> {{ current_user.username }}</span>
+        <a href="{{ url_for('home') }}" class="nav-btn nav-btn-primary">
+          <i class="fas fa-upload"></i> Upload
+        </a>
+        <a href="{{ url_for('settings') }}" class="nav-btn nav-btn-secondary">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="{{ url_for('auth.profile') }}" class="nav-btn nav-btn-secondary">
+          <i class="fas fa-user"></i> Profile
+        </a>
+        <a href="{{ url_for('history') }}" class="nav-btn nav-btn-secondary">
+          <i class="fas fa-history"></i> History
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="nav-btn nav-btn-danger">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
 
+<!-- Result Header -->
+<div class="result-header">
+  <h1><i class="fas fa-file-alt"></i> Results for: {{ video_name }}</h1>
+  <p>Video processing completed successfully</p>
+</div>
+
+<!-- Page Container -->
+<div class="page-container">
   <!-- Processing Metrics -->
   <div class="row mb-4 metrics-row">
     <div class="col-md-3 mb-3">
-      <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
-        <h6 class="text-white-50 mb-2"><i class="fas fa-clock"></i> Processing Time</h6>
-        <h3 class="mb-0">{{ processing_time }}s</h3>
+      <div class="card" style="background: #ffffff; border: 2px solid #e0e0e0; text-align: center; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h6 class="mb-3" style="color: #1a202c; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;"><i class="fas fa-clock" style="color: #3b82f6;"></i> Processing Time</h6>
+        <h3 class="mb-0" style="font-size: 2rem; font-weight: 700; color: #1a202c;">{{ processing_time }}s</h3>
       </div>
     </div>
     <div class="col-md-3 mb-3">
-      <div class="card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
-        <h6 class="text-white-50 mb-2"><i class="fas fa-chart-pie"></i> Compression Ratio</h6>
-        <h3 class="mb-0">{{ (compression_ratio * 100)|round(1) }}%</h3>
+      <div class="card" style="background: #ffffff; border: 2px solid #e0e0e0; text-align: center; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h6 class="mb-3" style="color: #1a202c; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;"><i class="fas fa-chart-pie" style="color: #3b82f6;"></i> Compression Ratio</h6>
+        <h3 class="mb-0" style="font-size: 2rem; font-weight: 700; color: #1a202c;">{{ (compression_ratio * 100)|round(1) }}%</h3>
       </div>
     </div>
     <div class="col-md-3 mb-3">
-      <div class="card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
-        <h6 class="text-white-50 mb-2"><i class="fas fa-file-lines"></i> Transcript Length</h6>
-        <h3 class="mb-0">{{ transcript_words }} words</h3>
+      <div class="card" style="background: #ffffff; border: 2px solid #e0e0e0; text-align: center; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h6 class="mb-3" style="color: #1a202c; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;"><i class="fas fa-file-lines" style="color: #3b82f6;"></i> Transcript Words</h6>
+        <h3 class="mb-0" style="font-size: 2rem; font-weight: 700; color: #1a202c;">{{ transcript_words }}</h3>
       </div>
     </div>
     <div class="col-md-3 mb-3">
-      <div class="card" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; text-align: center; padding: 20px; border-radius: 15px;">
-        <h6 class="text-white-50 mb-2"><i class="fas fa-wand-magic-sparkles"></i> Summary Length</h6>
-        <h3 class="mb-0">{{ summary_words }} words</h3>
+      <div class="card" style="background: #ffffff; border: 2px solid #e0e0e0; text-align: center; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h6 class="mb-3" style="color: #1a202c; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;"><i class="fas fa-wand-magic-sparkles" style="color: #3b82f6;"></i> Summary Words</h6>
+        <h3 class="mb-0" style="font-size: 2rem; font-weight: 700; color: #1a202c;">{{ summary_words }}</h3>
       </div>
     </div>
   </div>
 
-  <!-- Video (rectangular and centered) -->
-  <div class="video-wrapper">
-    <video controls class="video-rectangle">
-      <source src="{{ url_for('static', filename=video_file) }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+
+  <!-- Video Player Section -->
+  {% if video_url %}
+  <div class="card mb-4" style="padding: 30px; border-left: 5px solid #3b82f6; background: #ffffff; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);">
+    <h3 style="color: #1a202c; font-weight: 800; margin-bottom: 20px; font-size: 1.6rem; font-family: 'Poppins', sans-serif;">
+      <i class="fas fa-video" style="color: #3b82f6; margin-right: 10px;"></i> Uploaded Video
+    </h3>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <video controls style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+        <source src="/static/{{ video_url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
   </div>
+  {% endif %}
 
   <div class="row">
     <div class="col-lg-6 col-12 mb-4">
@@ -361,15 +660,135 @@
     </div>
   </div>
 
-  <!-- Summary Audio (larger) -->
-  <div class="card audio-card text-center">
-    <h4><i class="fas fa-headphones"></i> Summary Audio</h4>
-    <div class="audio-wrapper">
-      <audio controls>
-        <source src="{{ url_for('static', filename=summary_audio) }}" type="audio/mpeg">
-        Your browser does not support the audio tag.
-      </audio>
+  <!-- Translation Section -->
+  <div class="card" style="padding: 30px; margin: 30px 0; border-left: 5px solid #3b82f6;">
+    <h3 style="color: #1a202c; font-weight: 800; margin-bottom: 20px; font-size: 1.6rem; font-family: 'Poppins', sans-serif;">
+      <i class="fas fa-globe" style="color: #3b82f6; margin-right: 10px;"></i> Translate Output
+    </h3>
+    
+    <div class="translation-controls">
+      <label style="font-weight: 600; color: #333;">Translate to:</label>
+      <select id="translationLanguage">
+        <option value="">Select Language</option>
+        <option value="en">🇬🇧 English (English)</option>
+        <option value="es">🇪🇸 Spanish (Español)</option>
+        <option value="fr">🇫🇷 French (Français)</option>
+        <option value="de">🇩🇪 German (Deutsch)</option>
+        <option value="it">🇮🇹 Italian (Italiano)</option>
+        <option value="pt">🇵🇹 Portuguese (Português)</option>
+        <option value="ru">🇷🇺 Russian (Русский)</option>
+        <option value="ja">🇯🇵 Japanese (日本語)</option>
+        <option value="zh">🇨🇳 Chinese (中文)</option>
+        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+        <option value="ar">🇸🇦 Arabic (العربية)</option>
+        <option value="ko">🇰🇷 Korean (한국어)</option>
+        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+      </select>
+      
+      <button class="translate-btn" id="translateTranscriptBtn" onclick="translateContent('transcript')">
+        <span class="translate-spinner" id="transcriptSpinner"></span>
+        <i class="fas fa-language"></i> Translate Transcript
+      </button>
+      
+      <button class="translate-btn" id="translateSummaryBtn" onclick="translateContent('summary')">
+        <span class="translate-spinner" id="summarySpinner"></span>
+        <i class="fas fa-language"></i> Translate Summary
+      </button>
     </div>
+  </div>
+
+  <!-- Summary Audio Section -->
+  <div class="card audio-card text-center">
+    <h4><i class="fas fa-headphones"></i> Audio Player</h4>
+    
+    <!-- Language Selection for Audio - FIRST -->
+    <div style="margin-bottom: 25px; padding: 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <p style="color: #1a202c; margin-bottom: 15px; font-weight: 600;">
+        <i class="fas fa-language" style="color: #3b82f6; margin-right: 8px;"></i>
+        Generate audio in your preferred language:
+      </p>
+      
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center;">
+        <select id="audioLanguage" style="padding: 10px 15px; border-radius: 8px; border: 2px solid #3b82f6; font-size: 1rem; min-width: 200px; background: white;">
+          <option value="en">🇬🇧 English (English)</option>
+          <option value="es">🇪🇸 Spanish (Español)</option>
+          <option value="fr">🇫🇷 French (Français)</option>
+          <option value="de">🇩🇪 German (Deutsch)</option>
+          <option value="it">🇮🇹 Italian (Italiano)</option>
+          <option value="pt">🇵🇹 Portuguese (Português)</option>
+          <option value="ru">🇷🇺 Russian (Русский)</option>
+          <option value="ja">🇯🇵 Japanese (日本語)</option>
+          <option value="zh">🇨🇳 Chinese (中文)</option>
+          <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+          <option value="ar">🇸🇦 Arabic (العربية)</option>
+          <option value="ko">🇰🇷 Korean (한국어)</option>
+          <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+        </select>
+        
+        <button class="translate-btn" id="generateAudioBtn" onclick="generateAudioInLanguage()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); padding: 10px 25px;">
+          <i class="fas fa-volume-up"></i> Generate Audio
+        </button>
+      </div>
+      
+      <p id="audioStatus" style="text-align: center; margin-top: 10px; color: #64748b; font-size: 0.9rem;"></p>
+    </div>
+    
+    <!-- Summary Audio Player - SECOND -->
+    <div style="padding: 15px; background: #f0f4f8; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <p style="color: #3b82f6; font-weight: 700; margin-bottom: 15px; font-size: 1.1rem;">
+        <i class="fas fa-play-circle" style="margin-right: 8px;"></i>
+        Summary Audio
+      </p>
+      <div class="audio-wrapper" id="audioPlayerContainer" style="display: none;">
+        <audio id="summaryAudioPlayer" controls preload="auto">
+          <source id="audioSource" src="" type="audio/mpeg">
+          Your browser does not support the audio tag.
+        </audio>
+      </div>
+      <div id="audioPlaceholder" style="padding: 20px; background: #f0f4f8; border-radius: 8px; text-align: center;">
+        <i class="fas fa-volume-mute" style="font-size: 2rem; color: #a0aec0; margin-bottom: 10px;"></i>
+        <p style="color: #718096; margin: 0; font-size: 0.9rem;">
+          No audio generated yet.<br>
+          <strong>Select your language above and click "Generate Audio"</strong>
+        </p>
+      </div>
+      <p id="currentAudioLang" style="text-align: center; margin-top: 10px; color: #666; font-size: 0.85rem; display: none;">
+        <i class="fas fa-info-circle"></i> Currently playing: <span id="audioLangDisplay">English</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Export Section -->
+  <div class="card" style="padding: 30px; margin: 30px 0; border-left: 5px solid #3b82f6; background: #ffffff; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);">
+    <h3 style="color: #1a202c; font-weight: 800; margin-bottom: 20px; font-size: 1.6rem; font-family: 'Poppins', sans-serif;">
+      <i class="fas fa-download" style="color: #3b82f6; margin-right: 10px;"></i> Export as PDF
+    </h3>
+    
+    <p style="color: #2d3748; margin-bottom: 20px;">Select your preferred language for the PDF export:</p>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center;">
+      <select id="exportLanguage" style="padding: 10px 15px; border-radius: 8px; border: 2px solid #3b82f6; font-size: 1rem; min-width: 200px; background: white;">
+        <option value="">-- Select Language --</option>
+        <option value="en" selected>🇬🇧 English</option>
+        <option value="es">🇪🇸 Spanish (Español)</option>
+        <option value="fr">🇫🇷 French (Français)</option>
+        <option value="de">🇩🇪 German (Deutsch)</option>
+        <option value="it">🇮🇹 Italian (Italiano)</option>
+        <option value="pt">🇵🇹 Portuguese (Português)</option>
+        <option value="ru">🇷🇺 Russian (Русский)</option>
+        <option value="ja">🇯🇵 Japanese (日本語)</option>
+        <option value="zh">🇨🇳 Chinese (中文)</option>
+        <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+        <option value="ar">🇸🇦 Arabic (العربية)</option>
+        <option value="ko">🇰🇷 Korean (한국어)</option>
+        <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+      </select>
+      
+      <button class="translate-btn" onclick="exportPDF()" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); padding: 10px 25px;">
+        <i class="fas fa-file-pdf"></i> Download PDF
+      </button>
+    </div>
+    <p style="text-align: center; margin-top: 15px; color: #718096; font-size: 0.9rem;">All metadata and content will be included in the PDF</p>
   </div>
 
   <div class="text-center back-button">
@@ -379,5 +798,287 @@
   </div>
 </div>
 
+<script>
+  // CSRF Token Setup
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  
+  // Helper function for fetch with CSRF
+  async function fetchWithCSRF(url, options = {}) {
+    options.headers = options.headers || {};
+    if (csrfToken) {
+      options.headers['X-CSRFToken'] = csrfToken;
+    }
+    return fetch(url, options);
+  }
+  
+  // ===== GENERATE AUDIO IN LANGUAGE =====
+  async function generateAudioInLanguage() {
+    const btn = document.getElementById('generateAudioBtn');
+    const audioLanguage = document.getElementById('audioLanguage').value;
+    const audioStatus = document.getElementById('audioStatus');
+    const audioPlayer = document.getElementById('summaryAudioPlayer');
+    let audioSource = document.getElementById('audioSource');
+    
+    // Create source element if it doesn't exist
+    if (!audioSource) {
+      audioSource = document.createElement('source');
+      audioSource.id = 'audioSource';
+      audioSource.type = 'audio/mpeg';
+      audioPlayer.appendChild(audioSource);
+    }
+    
+    // Get the current summary text (use translated if available)
+    const summaryElement = document.querySelector('.summary-card p');
+    const summaryText = summaryElement ? summaryElement.textContent : '';
+    
+    if (!summaryText.trim()) {
+      alert('No summary text available to generate audio');
+      return;
+    }
+    
+    btn.disabled = true;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+    audioStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Translating and generating audio...';
+    audioStatus.style.color = '#3b82f6';
+    
+    try {
+      const response = await fetchWithCSRF('/api/generate-audio', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: summaryText,
+          language: audioLanguage
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        // Update audio player with new audio (add timestamp to prevent caching)
+        const newSrc = data.audio_url + '?t=' + Date.now();
+        audioSource.src = newSrc;
+        
+        // Show audio player, hide placeholder
+        const audioPlayerContainer = document.getElementById('audioPlayerContainer');
+        const audioPlaceholder = document.getElementById('audioPlaceholder');
+        const currentAudioLang = document.getElementById('currentAudioLang');
+        
+        if (audioPlayerContainer) audioPlayerContainer.style.display = 'block';
+        if (audioPlaceholder) audioPlaceholder.style.display = 'none';
+        if (currentAudioLang) currentAudioLang.style.display = 'block';
+        
+        // Force reload the audio element
+        audioPlayer.load();
+        
+        // Get language name for display
+        const langNames = {
+          'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+          'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian', 'ja': 'Japanese',
+          'zh': 'Chinese', 'hi': 'Hindi', 'ar': 'Arabic', 'ko': 'Korean', 'ta': 'Tamil'
+        };
+        
+        // Update the current audio language display
+        const audioLangDisplay = document.getElementById('audioLangDisplay');
+        if (audioLangDisplay) {
+          audioLangDisplay.textContent = langNames[audioLanguage] || audioLanguage;
+        }
+        
+        // Try to play once loaded
+        audioPlayer.onloadeddata = function() {
+          audioPlayer.play().catch(e => {
+            console.log('Autoplay prevented, user can click play:', e);
+          });
+        };
+        
+        audioStatus.innerHTML = `<i class="fas fa-check-circle" style="color: #2ed573;"></i> Audio ready in ${langNames[audioLanguage] || audioLanguage}! Click play to listen.`;
+        audioStatus.style.color = '#2ed573';
+        
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Audio Ready!';
+        btn.style.background = 'linear-gradient(135deg, #2ed573 0%, #00f2fe 100%)';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 2000);
+      } else {
+        throw new Error(data.error || 'Audio generation failed');
+      }
+    } catch (error) {
+      console.error('Audio generation error:', error);
+      audioStatus.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #ff6b6b;"></i> Error: ${error.message}`;
+      audioStatus.style.color = '#ff6b6b';
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  }
+  
+  // ===== EXPORT FUNCTION =====
+  function exportPDF() {
+    const btn = event.target.closest('button');
+    const exportLanguageSelect = document.getElementById('exportLanguage');
+    const exportLanguage = exportLanguageSelect.value;
+    
+    // Language code to name mapping
+    const languageNames = {
+      'en': 'English', 'es': 'Spanish', 'fr': 'French', 'de': 'German',
+      'it': 'Italian', 'pt': 'Portuguese', 'ru': 'Russian', 'ja': 'Japanese',
+      'zh': 'Chinese', 'hi': 'Hindi', 'ar': 'Arabic', 'ko': 'Korean', 'ta': 'Tamil'
+    };
+    const exportLanguageName = languageNames[exportLanguage] || 'English';
+    
+    // Get video name from template and clean it
+    // Remove timestamp suffix (e.g., _1741270234123) from video name
+    let videoName = '{{ video_name }}';
+    videoName = videoName.replace(/_\d{10,}$/, '');  // Remove trailing timestamp
+    videoName = videoName.replace(/[^a-zA-Z0-9\s_-]/g, '').replace(/\s+/g, '_');
+    
+    // If video name is empty or just underscores, use a default
+    if (!videoName || videoName.match(/^_*$/)) {
+      videoName = 'VideoReport';
+    }
+    
+    if (!exportLanguage) {
+      alert('Please select a language for the PDF export');
+      return;
+    }
+    
+    btn.disabled = true;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Translating & Generating PDF...';
+    
+    // Get current visible transcript and summary
+    const transcriptElement = document.querySelector('.transcript-card p');
+    const summaryElement = document.querySelector('.summary-card p');
+    const currentTranscript = transcriptElement ? transcriptElement.textContent : '';
+    const currentSummary = summaryElement ? summaryElement.textContent : '';
+    
+    fetch(`/export/pdf`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        transcript: currentTranscript,
+        summary: currentSummary,
+        language: exportLanguage
+      })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('PDF generation failed');
+      return response.blob();
+    })
+    .then(blob => {
+      // Create download link with Report_Language_Filename format
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Report_${exportLanguageName}_${videoName}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Downloaded!';
+      btn.style.background = 'linear-gradient(135deg, #2ed573 0%, #00f2fe 100%)';
+      
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        btn.style.background = '';
+      }, 2000);
+    })
+    .catch(error => {
+      console.error('PDF export error:', error);
+      alert('PDF export failed: ' + error.message);
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    });
+  }
+
+  async function translateContent(contentType) {
+    const selectedLanguage = document.getElementById('translationLanguage').value;
+    
+    if (!selectedLanguage) {
+      alert('Please select a language first');
+      return;
+    }
+
+    let contentElement, spinnerElement, buttonElement;
+    
+    if (contentType === 'transcript') {
+      // Find transcript in first column
+      const columns = document.querySelectorAll('.col-lg-6');
+      contentElement = columns[0].querySelector('p');
+      spinnerElement = document.getElementById('transcriptSpinner');
+      buttonElement = document.getElementById('translateTranscriptBtn');
+    } else {
+      // Find summary in second column
+      const columns = document.querySelectorAll('.col-lg-6');
+      contentElement = columns[1].querySelector('p');
+      spinnerElement = document.getElementById('summarySpinner');
+      buttonElement = document.getElementById('translateSummaryBtn');
+    }
+
+    const currentText = contentElement.textContent;
+    
+    // Show loading state
+    spinnerElement.style.display = 'inline-block';
+    buttonElement.disabled = true;
+
+    try {
+      const response = await fetchWithCSRF('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: currentText,
+          language: selectedLanguage
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        contentElement.textContent = data.translated_text;
+        contentElement.parentElement.classList.add('translated');
+        
+        // Show success message
+        const card = contentElement.closest('.content-card');
+        const originalTitle = card.querySelector('h3').textContent;
+        card.querySelector('h3').innerHTML = `<i class="fas fa-check-circle" style="color: #2ed573; margin-right: 10px;"></i>${originalTitle}`;
+      } else {
+        alert('Translation failed: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Translation error:', error);
+      alert('Translation error: ' + error.message);
+    } finally {
+      spinnerElement.style.display = 'none';
+      buttonElement.disabled = false;
+    }
+  }
+
+  // ===== FONT CUSTOMIZATION =====
+  function applyFontSettings() {
+    const fontSize = localStorage.getItem('fontSize') || 'medium';
+    const fontFamily = localStorage.getItem('fontFamily') || 'sans-serif';
+    
+    document.body.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge');
+    document.body.classList.remove('font-serif', 'font-monospace');
+    
+    document.body.classList.add(`font-${fontSize}`);
+    if (fontFamily !== 'sans-serif') {
+      document.body.classList.add(`font-${fontFamily}`);
+    }
+  }
+
+  applyFontSettings();
+</script>
 </body>
 </html>

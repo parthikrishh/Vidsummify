@@ -13,6 +13,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False, index=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
+    profile_photo = db.Column(db.String(255), nullable=True)  # Path to profile photo
+    password_reset_token = db.Column(db.String(100), nullable=True)  # Token for password reset
+    password_reset_expires = db.Column(db.DateTime, nullable=True)  # Token expiration time
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, default=True)
@@ -85,6 +88,10 @@ class ProcessingHistory(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
+    # User preferences
+    is_favorite = db.Column(db.Boolean, default=False)  # Bookmark/favorite toggle
+    tags = db.Column(db.String(500), default='')  # Comma-separated tags for categorization
+    
     def to_dict(self):
         """Convert to dictionary for JSON serialization"""
         return {
@@ -133,6 +140,7 @@ class LanguageSupport(db.Model):
             'hi': 'हिन्दी (Hindi)',
             'ar': 'العربية (Arabic)',
             'ko': '한국어 (Korean)',
+            'ta': 'தமிழ் (Tamil)',
         }
     
     def __repr__(self):
