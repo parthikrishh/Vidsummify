@@ -13,6 +13,27 @@ __pycache__/
 # Environment variables
 .env
 .env.local
+.env.*
+!.env.example
+
+# Secrets and credentials
+secrets/
+credentials/
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+id_rsa
+id_rsa.pub
+google-credentials.json
+service-account*.json
+
+# Local config overrides
+config.local.py
+settings.local.py
 
 # Database
 instance/
@@ -24,8 +45,7 @@ static/exports/
 static/audio_cache/
 static/results/
 static/videos/
-static/profile_photos/*.jpg
-static/profile_photos/*.png
+static/profile_photos/
 
 # IDE
 .vscode/
