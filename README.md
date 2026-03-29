@@ -1,190 +1,203 @@
-# Vidsummify 🎬📝  
+# Vidsummify
 
-Video-to-Text Summarization using Machine Learning
+Vidsummify is a production-style Flask application that transforms uploaded videos into structured textual outputs and downloadable artifacts.
 
-## 📌 Project Overview
+The pipeline includes audio extraction, speech-to-text transcription, abstractive summarization, translation, text-to-speech generation, and report export.
 
-Vidsummify is a Flask-based web application that converts video content into meaningful text summaries.
-The system extracts audio from videos, transcribes speech into text using a deep learning model, summarizes
-the text using NLP techniques, and generates audio from the summary.
+## Overview
 
----
+Vidsummify provides an end-to-end workflow for video understanding:
 
+1. Upload an MP4 video.
+2. Extract audio and transcribe speech with Faster-Whisper.
+3. Generate concise summaries using Transformer models.
+4. Translate summaries into supported languages.
+5. Generate audio narration from translated summary text.
+6. Export output as PDF and maintain searchable history.
 
-## 🚀 Features
+## Core Capabilities
 
-- **User Authentication** – Secure login/signup system with profile management
-- **Video Upload** – Support for MP4 video files up to 500MB
-- **Speech-to-Text** – Transcription using Faster-Whisper AI model
-- **Text Summarization** – Using Transformer models (DistilBART)
-- **Multi-language Translation** – Support for 13 languages
-- **Audio Generation** – Text-to-speech in selected language
-- **PDF Export** – Professional PDF reports with proper Unicode fonts
-- **Processing History** – Track all processed videos
-- **Favorites & Tags** – Organize your videos
-- **Dark/Light Mode** – Theme toggle support
-- **Video Playback on Result Page** – Uploaded videos are now viewable directly on the result page with a built-in video player.
+- Secure authentication: signup, login, logout, password reset, profile management
+- Long-form video processing with status tracking and cancellation
+- AI transcription with Faster-Whisper
+- Transformer-based summarization
+- Multi-language translation and TTS audio generation
+- Searchable processing history with favorite and tag support
+- Report export and multilingual font handling
+- Admin cleanup and storage statistics endpoints
 
----
+## Technology Stack
 
-## 🆕 Recent Updates
+- Backend: Flask, Flask-Login, Flask-SQLAlchemy, Flask-Migrate
+- ML and NLP: Faster-Whisper, Transformers, PyTorch, NLTK
+- Media: FFmpeg, MoviePy, PyDub, gTTS
+- Data: SQLite (via SQLAlchemy)
+- Export: ReportLab, python-docx, Pillow
+- Utility: python-dotenv, langdetect, googletrans
 
-- **Video Player on Result Page:** After upload and processing, the original video is now accessible and playable on the result page.
-- **Improved Static File Handling:** Uploaded videos are copied to a static-accessible directory for reliable playback.
-- **Bug Fixes & Code Cleanup:** General improvements for stability and maintainability.
+## Project Structure
 
----
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend:** Python 3.10+, Flask, SQLAlchemy
-- **Machine Learning:** Faster-Whisper, Transformers (HuggingFace)
-- **NLP:** DistilBART for summarization
-- **Audio Processing:** FFmpeg, MoviePy, PyDub, gTTS
-- **Translation:** Google Translate API
-- **PDF Generation:** ReportLab with Noto Sans fonts
-- **Frontend:** HTML5, CSS3, JavaScript, Font Awesome
-
----
-
-## 📂 Project Structure
-
-```
+```text
 VideoTextProject/
-├── app.py              # Main Flask application
-├── auth.py             # Authentication routes
-├── main.py             # Core processing functions
-├── models.py           # Database models
-├── config.py           # Configuration settings
-├── init_db.py          # Database initialization
-├── requirements.txt    # Python dependencies
-├── .env                # Environment variables
-├── .env.example        # Example environment file
-│
-├── templates/          # HTML templates
-│   ├── index.html      # Home/upload page
-│   ├── result.html     # Processing results
-│   ├── history.html    # Processing history
-│   ├── profile.html    # User profile
-│   ├── login.html      # Login page
-│   ├── signup.html     # Registration page
-│   ├── settings.html   # User settings
-│   └── error.html      # Error page
-│
-├── static/
-│   ├── fonts/          # Unicode fonts (Noto Sans)
-│   ├── results/        # Transcripts & summaries
-│   ├── exports/        # PDF exports
-│   ├── audio_cache/    # Generated audio
-│   └── profile_photos/ # User avatars
-│
-└── instance/
-    └── vidsummify.db   # SQLite database
+|-- app.py
+|-- auth.py
+|-- main.py
+|-- models.py
+|-- init_db.py
+|-- requirements.txt
+|-- .env.example
+|-- templates/
+|-- static/
+|   |-- fonts/
+|   |-- exports/
+|   |-- audio_cache/
+|   |-- profile_photos/
+|   \-- results/      (generated at runtime, ignored in git)
+\-- instance/
 ```
 
----
+## Prerequisites
 
-## ⚙️ Installation
+- Python 3.10+
+- FFmpeg installed and available in PATH
+- Windows, Linux, or macOS
 
-### 1. Clone the repository
+## Setup
+
+### 1) Clone repository
+
 ```bash
-git clone https://github.com/yourusername/VideoTextProject.git
-cd VideoTextProject
+git clone https://github.com/parthikrishh/Vidsummify.git
+cd Vidsummify
 ```
 
-### 2. Create virtual environment
+### 2) Create and activate virtual environment
+
+Windows (PowerShell):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Linux/macOS:
+
 ```bash
 python -m venv .venv
-.venv\Scripts\activate  # Windows
-source .venv/bin/activate  # Linux/Mac
+source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 3) Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Install FFmpeg
-```bash
-# Windows (using winget)
-winget install Gyan.FFmpeg
+### 4) Configure environment variables
 
-# Or download from https://ffmpeg.org/download.html
-```
-
-### 5. Setup environment
 ```bash
 copy .env.example .env
-# Edit .env with your settings
 ```
 
-### 6. Initialize database
+Set at least the following in .env:
+
+- SECRET_KEY
+- FLASK_DEBUG
+- FLASK_HOST
+- PORT
+
+### 5) Initialize database
+
 ```bash
 python init_db.py
 ```
 
+### 6) Run application
 
-### 7. Run the application
 ```bash
 python app.py
 ```
 
-### 8. Open in browser
-```
-http://localhost:5000
-```
+Default local URL:
 
----
+- http://127.0.0.1:5000
 
-## ❓ Troubleshooting
+## Configuration
 
-- **Video not playing on result page?**
-    - Ensure your browser supports MP4 playback.
-    - Confirm that FFmpeg is installed and available in your system PATH.
-    - Uploaded videos are copied to `static/results/` and served from there. If you encounter a 404 or playback issue, check file permissions and Flask static file settings.
+Environment-driven settings include:
 
----
+- SECRET_KEY: required for session security
+- FLASK_DEBUG: development mode toggle
+- FLASK_HOST and PORT: network bind configuration
+- MAX_FILE_SIZE: upload size cap (default example: 500 MB)
 
----
+Optional model-related parameters are provided in .env.example for whisper and summarization tuning.
 
-## 🌍 Supported Languages
+## HTTP Endpoints (High-Level)
 
-| Language | Code | Font |
-|----------|------|------|
-| English | en | NotoSans |
-| Spanish | es | NotoSans |
-| French | fr | NotoSans |
-| German | de | NotoSans |
-| Italian | it | NotoSans |
-| Portuguese | pt | NotoSans |
-| Russian | ru | NotoSans |
-| Japanese | ja | NotoSansJP |
-| Chinese | zh | NotoSansSC |
-| Korean | ko | NotoSansKR |
-| Hindi | hi | NotoSansDevanagari |
-| Arabic | ar | NotoSansArabic |
-| Tamil | ta | NotoSansTamil |
+UI and workflow endpoints:
 
----
+- GET /
+- POST /upload
+- GET /result and /result/<history_id>
+- GET /history
+- GET /settings
 
-## 📝 License
+Processing and content APIs:
 
-This project is developed as a Final Year Engineering Project.
+- POST /api/translate
+- POST /api/generate-audio
+- GET /api/download-pdf-simple/<history_id>
+- GET /api/download-pdf/<history_id>/<language>
+- DELETE /api/delete-history/<history_id>
 
----
+History and metadata APIs:
 
-## 👨‍💻 Author
+- POST /api/favorite/<history_id>
+- POST /api/tags/<history_id>
+- GET /api/search
+- GET /api/statistics
 
-**Parthiban K B**  
-GitHub: https://github.com/parthikrishh
+Admin APIs:
 
-Developed with ❤️ for educational purposes.
+- POST /api/admin/cleanup
+- GET /api/admin/storage-stats
 
----
+Authentication routes are exposed via blueprint in auth.py (signup/login/logout/reset/profile and profile APIs).
 
-## 📄 License
+## Supported Languages
+
+The application includes multilingual translation and export support for:
+
+- English, Spanish, French, German, Italian, Portuguese
+- Russian, Japanese, Chinese, Korean
+- Hindi, Arabic, Tamil
+
+Unicode font assets are provided in static/fonts for multilingual PDF output.
+
+## Operational Notes
+
+- Generated runtime media (for example static/results) is intentionally excluded from source control.
+- Keep large video/audio artifacts out of git history; use external object storage or Git LFS if permanent versioning is required.
+- For production deployment, run behind a WSGI server and disable debug mode.
+
+## Troubleshooting
+
+- Video playback issues:
+    - Verify browser MP4 support.
+    - Ensure FFmpeg is installed and accessible in PATH.
+    - Confirm generated media exists under static/results.
+- App fails at startup with SECRET_KEY error:
+    - Add a valid SECRET_KEY in .env.
+- Slow first run:
+    - Model downloads and initialization can be heavy on first execution.
+
+## Author
+
+- Name: Parthiban K B
+- GitHub: https://github.com/parthikrishh
+
+## License
 
 This project is for academic and learning purposes.
 
