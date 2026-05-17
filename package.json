@@ -1,0 +1,18 @@
+{
+  "name": "vidsummify",
+  "version": "1.0.0",
+  "description": "Video summarization and transcription application",
+  "main": "app.py",
+  "scripts": {
+    "dev": "python app.py",
+    "init-db": "python init_db.py",
+    "start": "python app.py"
+  },
+  "keywords": [
+    "video",
+    "summarization",
+    "transcription"
+  ],
+  "author": "",
+  "license": "MIT"
+}
